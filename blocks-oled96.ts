@@ -1,7 +1,7 @@
 /**
  * Provides functions to control the Grove OLED 0.96" from a Calliope Mini.
  */
-//% color=#fabe58 icon="\uf108" block="Grove OLED"
+//% color=#fabe58 icon="\uf108" block="pinkyo OLED"
 namespace oled96 {
     /**
      * Resets the display and clears it.
@@ -257,7 +257,7 @@ const basicFont: string[] = [
     "\x00\x60\x60\x00\x00\x00\x00\x00", // "."
     "\x00\x20\x10\x08\x04\x02\x00\x00", // "/"
     "\x00\x7F\x7F\x7F\x7F\x7F\x00\x00", // "0"
-    "\x00\x7F\x41\x41\x41\x00\x00\x00", // "1"
+    "\x00\x10\x13\x55\x19\x09\x00\x00", // "1"
     "\x00\x62\x51\x49\x49\x46\x00\x00", // "2"
     "\x00\x22\x41\x49\x49\x36\x00\x00", // "3"
     "\x00\x18\x14\x12\x7F\x10\x00\x00", // "4"
