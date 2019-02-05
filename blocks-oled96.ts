@@ -77,11 +77,10 @@ namespace oled96 {
     function putChar(c: string) {
         let c1 = c.charCodeAt(0);
         if (c1 < 32 || c1 > 127) //Ignore non-printable ASCII characters. This can be modified for multilingual font.
-        {   
-            writeCustomChar(c1);//writeCustomChar("\x00\xFF\x81\x81\x81\xFF\x00\x00");
+        {
+            writeCustomChar("\x00\xFF\x81\x81\x81\xFF\x00\x00");
         } else {
             writeCustomChar(basicFont[c1 - 32]);
-            
         }
     }
 
@@ -93,7 +92,7 @@ namespace oled96 {
     export function writeString(s: string) {
         for (let c of s) {
             putChar(c);
-            console.log(" display -> c: " + c);
+            console.log("c:" + c);
         }
     }
 
@@ -258,7 +257,7 @@ const basicFont: string[] = [
     "\x00\x08\x08\x08\x08\x08\x00\x00", // "-"
     "\x00\x60\x60\x00\x00\x00\x00\x00", // "."
     "\x00\x20\x10\x08\x04\x02\x00\x00", // "/"
-    "\x78\x40\x40\x78\x22\x39\x22\x38", // "0"
+    "\x00\x3E\x51\x49\x45\x3E\x00\x00", // "0"
     "\x00\x00\x42\x7F\x40\x00\x00\x00", // "1"
     "\x00\x62\x51\x49\x49\x46\x00\x00", // "2"
     "\x00\x22\x41\x49\x49\x36\x00\x00", // "3"
