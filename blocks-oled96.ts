@@ -1,7 +1,7 @@
 /**
  * Provides functions to control the Grove OLED 0.96" from a Calliope Mini.
  */
-//% color=#fabe58 icon="\uf108" block="pinkyo OLED"
+//% color=#fabe58 icon="\uf108" block="Grove OLED"
 namespace oled96 {
     /**
      * Resets the display and clears it.
@@ -78,8 +78,7 @@ namespace oled96 {
         let c1 = c.charCodeAt(0);
         if (c1 < 32 || c1 > 127) //Ignore non-printable ASCII characters. This can be modified for multilingual font.
         {
-            //writeCustomChar("\x00\xFF\x81\x81\x81\xFF\x00\x00");
-            writeCustomChar(c1);//to get character code
+            writeCustomChar("\x00\xFF\x81\x81\x81\xFF\x00\x00");
         } else {
             writeCustomChar(basicFont[c1 - 32]);
         }
@@ -258,7 +257,7 @@ const basicFont: string[] = [
     "\x00\x60\x60\x00\x00\x00\x00\x00", // "."
     "\x00\x20\x10\x08\x04\x02\x00\x00", // "/"
     "\x78\x40\x40\x78\x22\x39\x22\x38", // "0"
-    "\x00\xEF\xEF\xAA\xE6\xF6\x00\x00", // "1"
+    "\x00\x00\x42\x7F\x40\x00\x00\x00", // "1"
     "\x00\x62\x51\x49\x49\x46\x00\x00", // "2"
     "\x00\x22\x41\x49\x49\x36\x00\x00", // "3"
     "\x00\x18\x14\x12\x7F\x10\x00\x00", // "4"
