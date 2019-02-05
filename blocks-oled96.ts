@@ -77,11 +77,11 @@ namespace oled96 {
     function putChar(c: string) {
         let c1 = c.charCodeAt(0);
         if (c1 < 32 || c1 > 127) //Ignore non-printable ASCII characters. This can be modified for multilingual font.
-        {   console.log(" display > range c1: " + c1;
+        {   console.log(" display > range c1: " + c1);
             writeCustomChar(c1);//writeCustomChar("\x00\xFF\x81\x81\x81\xFF\x00\x00");
         } else {
             writeCustomChar(basicFont[c1 - 32]);
-            console.log(" display within range c1: " + c1;
+            console.log(" display within range c1: " + c1);
         }
     }
 
