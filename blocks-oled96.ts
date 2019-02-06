@@ -81,8 +81,9 @@ namespace oled96 {
             console.log("c1:" +  c1);
         } else {
 
-            writeCustomChar(basicFont[c1 - 32]);
-            writeCustomChar(basicFont_arabic[c1 - 32]);
+            //writeCustomChar(basicFont[c1 - 32]);
+            //writeCustomChar(basicFont_arabic[c1 - 32]);
+            writeCustomChar(basicFont_new[0]);
 
             
         }
@@ -181,7 +182,7 @@ namespace oled96 {
     //% blockId=oled96_write_custom_char
     //% block="write custom character %c"
     export function writeCustomChar(c: string) {
-        for (let i = 0; i < 8; i++) {
+        for (let i = 0; i < 12; i++) {
             writeData(c.charCodeAt(i));
         }
     }
@@ -245,6 +246,11 @@ const LEFT_HORIZONTAL_SCROLL = 0x27;
 const VERTICAL_AND_RIGHT_HORIZONTAL_SCROLL = 0x29;
 const VERTICAL_AND_LEFT_HORIZONTAL_SCROLL = 0x2A;
 
+    
+const basicFont_new: string[] = [
+    "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00", // " "  0
+
+    
 const basicFont: string[] = [
     "\x00\x00\x00\x00\x00\x00\x00\x00", // " "  0
     "\x00\x00\x5F\x00\x00\x00\x00\x00", // "!"  1   ء
