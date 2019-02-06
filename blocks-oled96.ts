@@ -94,17 +94,9 @@ namespace oled96 {
             console.log("c1:" +  c1);
 
         } else {
-            if( c1 == 19 )
-                writeCustomChar(basicFont[6]);
-            if( c1 == 20 )
-                writeCustomChar(basicFont[7]);
-            if( c1 == 21 )
-                writeCustomChar(basicFont[8]);
-            if( c1 == 22 )
-                writeCustomChar(basicFont[9]);
-            
-            //writeCustomChar(basicFont[c1 - 32]);
-            //writeCustomChar(basicFont[5]);
+
+            writeCustomChar(basicFont[c1 - 32]);
+
         }
     }
 
