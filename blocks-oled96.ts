@@ -27,7 +27,7 @@ namespace oled96 {
     //% block="clear display"
     export function clearDisplay() {
         cmd(DISPLAY_OFF);   //display off
-        for (let j = 0; j < 12; j++) {
+        for (let j = 0; j < 16; j++) {
             setTextXY(j, 0);
             {
                 for (let i = 0; i < 16; i++)  //clear all columns
@@ -67,8 +67,8 @@ namespace oled96 {
         if (column > 15) { c = 15 }
 
         cmd(0xB0 + r);            //set page address
-        cmd(0x00 + (12 * c & 0x0F));  //set column lower address
-        cmd(0x10 + ((12 * c >> 4) & 0x0F));   //set column higher address
+        cmd(0x00 + (16 * c & 0x0F));  //set column lower address
+        cmd(0x10 + ((16 * c >> 4) & 0x0F));   //set column higher address
     }
 
     /**
@@ -182,7 +182,7 @@ namespace oled96 {
     //% blockId=oled96_write_custom_char
     //% block="write custom character %c"
     export function writeCustomChar(c: string) {
-        for (let i = 0; i < 12; i++) {
+        for (let i = 0; i < 16; i++) {
             writeData(c.charCodeAt(i));
         }
     }
@@ -248,8 +248,8 @@ const VERTICAL_AND_LEFT_HORIZONTAL_SCROLL = 0x2A;
 
     
 const basicFont_new: string[] = [
-    "\x07\x3E\x08\x10\x1C\x5F\x64\x3E\x64\x3E\x08\x3E", // " "  0
-    "\x00\x00\x00\x00\x08\x08\x1C\x5F\x00\x00\x00\x00"
+    "\x00\x14\x7F\x14\x7F\x14\x00\x00\x00\x14\x7F\x14\x7F\x14\x00\x00", // " "  0
+    "\x00\x14\x7F\x14\x7F\x14\x00\x00\x00\x14\x7F\x14\x7F\x14\x00\x00"
     ]
 
     
