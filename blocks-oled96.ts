@@ -79,13 +79,13 @@ namespace oled96 {
         if (c1 < 32 || c1 > 127) //Ignore non-printable ASCII characters. This can be modified for multilingual font.
         {
             if(c1 > 1000){
-                writeCustomChar(basicFont[48]);//writeCustomChar("\x00\xFF\x81\x81\x81\xFF\x00\x00");
+                writeCustomChar(basicFont[3]);//writeCustomChar("\x00\xFF\x81\x81\x81\xFF\x00\x00");
             }
             if(c1 > 500 && c1 < 1000){
-                writeCustomChar(basicFont[65]);//writeCustomChar("\x00\xFF\x81\x81\x81\xFF\x00\x00");
+                writeCustomChar(basicFont[4]);//writeCustomChar("\x00\xFF\x81\x81\x81\xFF\x00\x00");
             }
              if(c1 > 127 && c1 < 500){
-                writeCustomChar(basicFont[123]);//writeCustomChar("\x00\xFF\x81\x81\x81\xFF\x00\x00");
+                writeCustomChar(basicFont[5]);//writeCustomChar("\x00\xFF\x81\x81\x81\xFF\x00\x00");
              }
 
             //console.log("c1:" +  c1);
@@ -253,7 +253,7 @@ const VERTICAL_AND_RIGHT_HORIZONTAL_SCROLL = 0x29;
 const VERTICAL_AND_LEFT_HORIZONTAL_SCROLL = 0x2A;
 
 const basicFont: string[] = [
-    "\x00\x00\x00\x00\x00\x00\x00\x00", // " "
+    "\x00\x00\x00\x00\x00\x00\x00\x00", // " "  32
     "\x00\x00\x5F\x00\x00\x00\x00\x00", // "!"
     "\x00\x00\x07\x00\x07\x00\x00\x00", // """
     "\x00\x14\x7F\x14\x7F\x14\x00\x00", // "#"
@@ -261,12 +261,12 @@ const basicFont: string[] = [
     "\x00\x23\x13\x08\x64\x62\x00\x00", // "%"
     "\x00\x36\x49\x55\x22\x50\x00\x00", // "&"
     "\x00\x00\x05\x03\x00\x00\x00\x00", // "'"
-    "\x00\x1C\x22\x41\x00\x00\x00\x00", // "("
+    "\x00\x1C\x22\x41\x00\x00\x00\x00", // "(" 40
     "\x00\x41\x22\x1C\x00\x00\x00\x00", // ")"
     "\x00\x08\x2A\x1C\x2A\x08\x00\x00", // "*"
     "\x00\x08\x08\x3E\x08\x08\x00\x00", // "+"
     "\x00\xA0\x60\x00\x00\x00\x00\x00", // ","
-    "\x00\x08\x08\x08\x08\x08\x00\x00", // "-"
+    "\x00\x08\x08\x08\x08\x08\x00\x00", // "-"  45
     "\x00\x60\x60\x00\x00\x00\x00\x00", // "."
     "\x00\x20\x10\x08\x04\x02\x00\x00", // "/"
     "\x00\x3E\x51\x49\x45\x3E\x00\x00", // "0"
