@@ -27,7 +27,7 @@ namespace oled96 {
     //% block="clear display"
     export function clearDisplay() {
         cmd(DISPLAY_OFF);   //display off
-        for (let j = 0; j < 16; j++) {
+        for (let j = 0; j < 8; j++) {
             setTextXY(j, 0);
             {
                 for (let i = 0; i < 16; i++)  //clear all columns
@@ -63,12 +63,12 @@ namespace oled96 {
         let c = column;
         if (row < 0) { r = 0 }
         if (column < 0) { c = 0 }
-        if (row > 16) { r = 16 }
-        if (column > 32) { c = 32 }
+        if (row > 7) { r = 7 }
+        if (column > 15) { c = 15 }
 
         cmd(0xB0 + r);            //set page address
-        cmd(0x00 + (16 * c & 0x0F));  //set column lower address
-        cmd(0x10 + ((16 * c >> 8) & 0x0F));   //set column higher address
+        cmd(0x00 + (8 * c & 0x0F));  //set column lower address
+        cmd(0x10 + ((8 * c >> 4) & 0x0F));   //set column higher address
     }
 
     /**
@@ -81,9 +81,8 @@ namespace oled96 {
             console.log("c1:" +  c1);
         } else {
 
-            //writeCustomChar(basicFont[c1 - 32]);
-            //writeCustomChar(basicFont_arabic[c1 - 32]);
-            writeCustomChar(basicFont_new[0]);
+            writeCustomChar(basicFont[c1 - 32]);
+            writeCustomChar(basicFont_arabic[c1 - 32]);
 
             
         }
@@ -182,7 +181,7 @@ namespace oled96 {
     //% blockId=oled96_write_custom_char
     //% block="write custom character %c"
     export function writeCustomChar(c: string) {
-        for (let i = 0; i < 16; i++) {
+        for (let i = 0; i < 8; i++) {
             writeData(c.charCodeAt(i));
         }
     }
@@ -246,13 +245,6 @@ const LEFT_HORIZONTAL_SCROLL = 0x27;
 const VERTICAL_AND_RIGHT_HORIZONTAL_SCROLL = 0x29;
 const VERTICAL_AND_LEFT_HORIZONTAL_SCROLL = 0x2A;
 
-    
-const basicFont_new: string[] = [
-    "\x00\x14\x7F\x14\x7F\x14\x00\x00\x00\x14\x7F\x14\x7F\x14\x00\x00", // " "  0
-    "\x00\x14\x7F\x14\x7F\x14\x00\x00\x00\x14\x7F\x14\x7F\x14\x00\x00"
-    ]
-
-    
 const basicFont: string[] = [
     "\x00\x00\x00\x00\x00\x00\x00\x00", // " "  0
     "\x00\x00\x5F\x00\x00\x00\x00\x00", // "!"  1   ء
