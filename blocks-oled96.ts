@@ -94,8 +94,8 @@ namespace oled96 {
             console.log("c1:" +  c1);
 
         } else {
-            //writeCustomChar(basicFont[c1 - 32]);
-            writeCustomChar(basicFont[5]);
+            writeCustomChar(basicFont[c1 - 32]);
+            //writeCustomChar(basicFont[5]);
         }
     }
 
