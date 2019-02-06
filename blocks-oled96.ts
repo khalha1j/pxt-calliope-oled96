@@ -96,14 +96,9 @@ namespace oled96 {
         } else {
 
             writeCustomChar(basicFont[c1 - 32]);
-            if( c1 == 51 )
-                writeCustomChar(basicFont[6]);
-            if( c1 == 52 )
-                writeCustomChar(basicFont[7]);
-            if( c1 == 53 )
-                writeCustomChar(basicFont[8]);
-            if( c1 == 54 )
-                writeCustomChar(basicFont[9]);
+            //if( c1 == 51 )
+               // writeCustomChar(basicFont[6]);
+
             
         }
     }
