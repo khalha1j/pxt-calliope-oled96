@@ -63,12 +63,12 @@ namespace oled96 {
         let c = column;
         if (row < 0) { r = 0 }
         if (column < 0) { c = 0 }
-        if (row > 7) { r = 7 }
-        if (column > 15) { c = 15 }
+        if (row > 16) { r = 16 }
+        if (column > 32) { c = 32 }
 
         cmd(0xB0 + r);            //set page address
         cmd(0x00 + (16 * c & 0x0F));  //set column lower address
-        cmd(0x10 + ((16 * c >> 4) & 0x0F));   //set column higher address
+        cmd(0x10 + ((16 * c >> 8) & 0x0F));   //set column higher address
     }
 
     /**
