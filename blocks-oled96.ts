@@ -79,7 +79,7 @@ namespace oled96 {
         if (c1 < 32 || c1 > 127) //Ignore non-printable ASCII characters. This can be modified for multilingual font.
         {
             if(c1 < 32){
-                writeCustomChar(basicFont[5]);//writeCustomChar("\x00\xFF\x81\x81\x81\xFF\x00\x00");
+                writeCustomChar(basicFont[25]);//writeCustomChar("\x00\xFF\x81\x81\x81\xFF\x00\x00");
             }
             if(c1 > 1000){
                 writeCustomChar(basicFont[10]);//writeCustomChar("\x00\xFF\x81\x81\x81\xFF\x00\x00");
@@ -94,7 +94,8 @@ namespace oled96 {
             console.log("c1:" +  c1);
 
         } else {
-            writeCustomChar(basicFont[c1 - 32]);
+            //writeCustomChar(basicFont[c1 - 32]);
+            writeCustomChar(basicFont[5]);
         }
     }
 
