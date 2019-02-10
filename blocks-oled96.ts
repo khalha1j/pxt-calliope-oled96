@@ -111,19 +111,14 @@ namespace oled96 {
     //% block="write %s|to display"
     export function writeString(s: string) {
         let pos: number =0;
-        
-       for( let c_index =  (s.length-1); c_index >0; c_index-- ) {
+       for( let c_index =  (s.length-1); c_index >=0; c_index-- ) {
             //for (let j = 0; j < 8; j++) {
             //for (let c of s) {
-           let c      = s.charAt(c_index);
-           //let c_next = "";// s.charAt(c_index-1);
-
+           let c = s.charAt(c_index);
            putCharArabic(c, pos);
-
-           if(c_index >  1 &&  c_index ){//put next as last char
-               pos = 1;// mid letter unless...
- 
-               /*
+           if(c_index >  1 ){//put next as last char
+               let c_next = s.charAt(c_index-1);
+                   
                if( c_next == ' ')
                {
                     pos = 0;// first letter again unless...
@@ -132,8 +127,6 @@ namespace oled96 {
                {
                    pos = 1;// mid letter unless...
                }
-               */
-               
            }
            if(c == ' ' ){//put next as first char
                 pos = 0;
