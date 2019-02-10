@@ -114,10 +114,21 @@ namespace oled96 {
             //for (let j = 0; j < 8; j++) {
             //for (let c of s) {
            let c = s.charAt(c_index);
-           if(c == ' '){
-            putChar("x");   
+           if(c_index ==  (s.length-1) ){//put next as first char
+                putCharArabic(c, 0);
            }
-            putCharArabic(c,0);
+           if(c_index ==  0 ){//put next as last char
+                putCharArabic(c, 2);
+           }
+           if(c_index !=  (s.length-1) && c_index != 0) {//mid
+                putCharArabic(c,1);   
+           }
+           if(c == ' '){//put next as first char again
+                putCharArabic(c,0);
+               //pos = 0;
+           }
+           
+            
         }
         //console.log("s0:" +  s.charCodeAt(0));
     }
