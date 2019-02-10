@@ -70,7 +70,7 @@ namespace oled96 {
         cmd(0x00 + (8 * c & 0x0F));  //set column lower address
         cmd(0x10 + ((8 * c >> 4) & 0x0F));   //set column higher address
     }
-    
+
     /**
      * Writes a single character to the display.
      */
@@ -84,24 +84,6 @@ namespace oled96 {
             writeCustomChar(basicFont_arabic[c1 - 32]);
         }
     }
-    
-    function putCharArabic(c: string, pos: number) {
-        let c1 = c.charCodeAt(0);
-        if (c1 < 32 || c1 > 127) //Ignore non-printable ASCII characters. This can be modified for multilingual font.
-        {
-            console.log("c1:" +  c1);
-        } else {
-            //writeCustomChar(basicFont[c1 - 32]);
-            if(pos == 0)
-            {  
-                writeCustomChar(basicFont_arabic[c1 - 32]);
-            }
-            if(pos == 2)
-            {   
-                writeCustomChar(basicFont_arabic[c1 - 32]);
-            }
-        }
-    }
 
     /**
      * Writes a string to the display at the current cursor position.
@@ -109,29 +91,14 @@ namespace oled96 {
     //% blockId=oled96_write_string
     //% block="write %s|to display"
     export function writeString(s: string) {
-        //let pos: CharPosition = 0;
-        let isFirst: boolean = false;
-        let isMid: boolean = false;
-        let isLast: boolean = false;
        for( let c_index =  (s.length-1); c_index >=0; c_index-- ) {
             //for (let j = 0; j < 8; j++) {
             //for (let c of s) {
            let c = s.charAt(c_index);
-           if(c_index ==  (s.length-1) ){//put next as first char
-                putCharArabic(c, 0);
+           if(c == ' '){
+            putChar("x");   
            }
-           if(c_index ==  0 ){//put next as last char
-                putCharArabic(c, 2);
-           }
-           if(c_index !=  (s.length-1) && c_index != 0) {//mid
-                putCharArabic(c,1);   
-           }
-           if(c == ' '){//put next as first char again
-                putCharArabic(c,0);
-               //pos = 0;
-           }
-           
-            
+            putChar(c);
         }
         //console.log("s0:" +  s.charCodeAt(0));
     }
