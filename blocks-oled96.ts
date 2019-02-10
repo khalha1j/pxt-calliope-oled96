@@ -94,9 +94,9 @@ namespace oled96 {
     //% blockId=oled96_write_string
     //% block="write %s|to display"
     export function writeString(s: string) {
-        for (let c of s) {
+       for( let c =  (s.length-1); c >=0; c-- ) {
+        //for (let c of s) {
             putChar(c);
-            
         }
         //console.log("s0:" +  s.charCodeAt(0));
     }
