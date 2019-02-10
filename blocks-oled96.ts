@@ -117,10 +117,10 @@ namespace oled96 {
             //for (let j = 0; j < 8; j++) {
             //for (let c of s) {
            let c = s.charAt(c_index);
-           if(c_index =  (s.length-1) ){//put next as first char
+           if(c_index ==  (s.length-1) ){//put next as first char
                 putCharArabic(c, 0);
            }
-           if(c_index =  0 ){//put next as last char
+           if(c_index ==  0 ){//put next as last char
                 putCharArabic(c, 2);
            }
            else if(c == ' '){//put next as first char again
