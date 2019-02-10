@@ -85,6 +85,25 @@ namespace oled96 {
         }
     }
 
+    function putCharArabic(c: string, pos: number) {
+    let c1 = c.charCodeAt(0);
+    if (c1 < 32 || c1 > 127) //Ignore non-printable ASCII characters. This can be modified for multilingual font.
+    {
+        console.log("c1:" +  c1);
+    } else {
+        //writeCustomChar(basicFont[c1 - 32]);
+        if(pos == 0)
+        {  
+            writeCustomChar(basicFont_arabic[c1 - 32]);
+        }
+        if(pos == 2)
+        {   
+            writeCustomChar(basicFont_arabic[c1 - 32]);
+        }
+    }
+}
+
+    
     /**
      * Writes a string to the display at the current cursor position.
      */
@@ -98,7 +117,7 @@ namespace oled96 {
            if(c == ' '){
             putChar("x");   
            }
-            putChar(c);
+            putCharArabic(c,0);
         }
         //console.log("s0:" +  s.charCodeAt(0));
     }
