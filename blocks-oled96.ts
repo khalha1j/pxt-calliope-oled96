@@ -81,7 +81,7 @@ namespace oled96 {
             console.log("c1:" +  c1);
         } else {
             //writeCustomChar(basicFont[c1 - 32]);
-            writeCustomChar(basicFont[c1 - 32]);
+            writeCustomChar(basicFont_arabic[c1 - 32]);
         }
     }
 
@@ -116,21 +116,12 @@ namespace oled96 {
             //for (let c of s) {
            let c = s.charAt(c_index);
            putCharArabic(c, pos);
+           
            if(c_index >  1 ){//put next as last char
-               let c_next = s.charAt(c_index-1);
-                   
-               if( c_next == ' ')
-               {
-                    pos = 0;// first letter again unless...
-               }
-               else
-               {
-                   pos = 1;// mid letter unless...
-               }
+                pos = 1;// mid letter unless...
            }
-           if(c == ' ' ){//put next as first char
+           if(c == ' ' ){//put next as last char
                 pos = 0;
-
            }
            if(c_index == 1 ){//put next as last char
                 pos = 2;
