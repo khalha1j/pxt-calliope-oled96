@@ -80,11 +80,8 @@ namespace oled96 {
         {
             console.log("c1:" +  c1);
         } else {
-
             //writeCustomChar(basicFont[c1 - 32]);
             writeCustomChar(basicFont_arabic[c1 - 32]);
-
-            
         }
     }
 
@@ -98,6 +95,9 @@ namespace oled96 {
             //for (let j = 0; j < 8; j++) {
             //for (let c of s) {
            let c = s.charAt(c_index);
+           if(c == ' '){
+            putChar("x");   
+           }
             putChar(c);
         }
         //console.log("s0:" +  s.charCodeAt(0));
