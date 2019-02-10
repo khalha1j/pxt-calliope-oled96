@@ -116,7 +116,7 @@ namespace oled96 {
             //for (let j = 0; j < 8; j++) {
             //for (let c of s) {
            let c      = s.charAt(c_index);
-           let c_next = s.charAt(c_index-1);
+           let c_next = "";// s.charAt(c_index-1);
 
            putCharArabic(c, pos);
 
