@@ -92,16 +92,16 @@ namespace oled96 {
             writeCustomChar(basicFont_arabic[c1 - 32]);
         }
     }
-    function putCharArabic(c: string, pos: CharPosition) {
+    function putCharArabic(c: string, pos: number) {
         let c1 = c.charCodeAt(0);
         if (c1 < 32 || c1 > 127) //Ignore non-printable ASCII characters. This can be modified for multilingual font.
         {
             console.log("c1:" +  c1);
         } else {
             //writeCustomChar(basicFont[c1 - 32]);
-            if(pos == CharPosition.First)     
+            if(pos == 0)     
                 writeCustomChar(basicFont_arabic[c1 - 32]);
-            if(pos == CharPosition.Last)     
+            if(pos == 2)     
                 writeCustomChar(basicFont_arabic[c1 - 32]);
         }
     }
@@ -112,7 +112,7 @@ namespace oled96 {
     //% blockId=oled96_write_string
     //% block="write %s|to display"
     export function writeString(s: string) {
-        //let pos: CharPosition = CharPosition.First;
+        //let pos: CharPosition = 0;
         let isFirst: boolean = false;
         let isMid: boolean = false;
         let isLast: boolean = false;
@@ -121,17 +121,17 @@ namespace oled96 {
             //for (let c of s) {
            let c = s.charAt(c_index);
            if(c_index =  (s.length-1) ){//put next as first char
-                putChar(c, CharPosition.First);
+                putChar(c, 0);
            }
            if(c_index =  0 ){//put next as last char
-                putChar(c, CharPosition.Last);
+                putChar(c, 2);
            }
            else if(c == ' '){//put next as first char again
-                putCharArabic(c,CharPosition.Mid);
-               //pos = CharPosition.First;
+                putCharArabic(c,1);
+               //pos = 0;
            }
            else{
-                putCharArabic(c,CharPosition.Mid);   
+                putCharArabic(c,1);   
            }
            
             
