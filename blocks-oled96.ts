@@ -117,7 +117,8 @@ namespace oled96 {
            let c = s.charAt(c_index);
            putCharArabic(c, pos);
            if(c_index >  1 ){//put next as last char
-               let c_next = s.charAt(c_index-1);
+              /*
+              let c_next = s.charAt(c_index-1);
                    
                if( c_next == ' ')
                {
@@ -127,6 +128,7 @@ namespace oled96 {
                {
                    pos = 1;// mid letter unless...
                }
+               */
            }
            if(c == ' ' ){//put next as first char
                 pos = 0;
