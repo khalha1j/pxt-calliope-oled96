@@ -72,10 +72,10 @@ namespace oled96 {
     }
 
     
-    enum CharPosition {
-        First,
-        Mid,
-        Last
+    export enum CharPosition {
+        First = 0,
+        Mid = 1,
+        Last = 2
     }
 
     
@@ -112,7 +112,7 @@ namespace oled96 {
     //% blockId=oled96_write_string
     //% block="write %s|to display"
     export function writeString(s: string) {
-        let pos: CharPosition = CharPosition.First;
+        //let pos: CharPosition = CharPosition.First;
         let isFirst: boolean = false;
         let isMid: boolean = false;
         let isLast: boolean = false;
@@ -130,11 +130,8 @@ namespace oled96 {
                 putCharArabic(c,CharPosition.Mid);
                //pos = CharPosition.First;
            }
-           else if(c == ' '){//put next as first char
-                putCharArabic(c,CharPosition.Mid);
-           }
            else{
-                putCharArabic(c);   
+                putCharArabic(c,CharPosition.Mid);   
            }
            
             
