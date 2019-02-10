@@ -118,11 +118,13 @@ namespace oled96 {
            putCharArabic(c, pos);
            
            if(c_index >  1 ){//put next as last char
-                pos = 1;// mid letter unless...
+               if( s.charAt(c_index-1) == ' ')
+                    pos = 0;// first letter again unless...
+               else
+                   pos = 1;// mid letter unless...
            }
            if(c == ' ' ){//put next as first char
                 pos = 0;
-                       putChar("X");
 
            }
            if(c_index == 1 ){//put next as last char
