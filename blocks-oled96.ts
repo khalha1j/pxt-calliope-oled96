@@ -70,14 +70,6 @@ namespace oled96 {
         cmd(0x00 + (8 * c & 0x0F));  //set column lower address
         cmd(0x10 + ((8 * c >> 4) & 0x0F));   //set column higher address
     }
-
-    
-    export enum CharPosition {
-        First = 0,
-        Mid = 1,
-        Last = 2
-    }
-
     
     /**
      * Writes a single character to the display.
@@ -92,6 +84,7 @@ namespace oled96 {
             writeCustomChar(basicFont_arabic[c1 - 32]);
         }
     }
+    
     function putCharArabic(c: string, pos: number) {
         let c1 = c.charCodeAt(0);
         if (c1 < 32 || c1 > 127) //Ignore non-printable ASCII characters. This can be modified for multilingual font.
@@ -99,10 +92,14 @@ namespace oled96 {
             console.log("c1:" +  c1);
         } else {
             //writeCustomChar(basicFont[c1 - 32]);
-            if(pos == 0)     
+            if(pos == 0)
+            {  
                 writeCustomChar(basicFont_arabic[c1 - 32]);
-            if(pos == 2)     
+            }
+            if(pos == 2)
+            {   
                 writeCustomChar(basicFont_arabic[c1 - 32]);
+            }
         }
     }
 
@@ -121,10 +118,10 @@ namespace oled96 {
             //for (let c of s) {
            let c = s.charAt(c_index);
            if(c_index =  (s.length-1) ){//put next as first char
-                putChar(c, 0);
+                putCharArabic(c, 0);
            }
            if(c_index =  0 ){//put next as last char
-                putChar(c, 2);
+                putCharArabic(c, 2);
            }
            else if(c == ' '){//put next as first char again
                 putCharArabic(c,1);
