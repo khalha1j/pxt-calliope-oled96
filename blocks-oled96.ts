@@ -81,7 +81,7 @@ namespace oled96 {
             console.log("c1:" +  c1);
         } else {
             //writeCustomChar(basicFont[c1 - 32]);
-            writeCustomChar(basicFont_arabic[c1 - 32]);
+            writeCustomChar(basicFont[c1 - 32]);
         }
     }
 
@@ -122,6 +122,8 @@ namespace oled96 {
            }
            if(c == ' ' ){//put next as first char
                 pos = 0;
+                       putChar("X");
+
            }
            if(c_index == 1 ){//put next as last char
                 pos = 2;
