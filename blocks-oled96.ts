@@ -86,22 +86,22 @@ namespace oled96 {
     }
 
     function putCharArabic(c: string, pos: number) {
-    let c1 = c.charCodeAt(0);
-    if (c1 < 32 || c1 > 127) //Ignore non-printable ASCII characters. This can be modified for multilingual font.
-    {
-        console.log("c1:" +  c1);
-    } else {
-        //writeCustomChar(basicFont[c1 - 32]);
-        if(pos == 0)
-        {  
-            writeCustomChar(basicFont_arabic[c1 - 32]);
-        }
-        if(pos == 2)
-        {   
-            writeCustomChar(basicFont_arabic[c1 - 32]);
+        let c1 = c.charCodeAt(0);
+        if (c1 < 32 || c1 > 127) //Ignore non-printable ASCII characters. This can be modified for multilingual font.
+        {
+            console.log("c1:" +  c1);
+        } else {
+            //writeCustomChar(basicFont[c1 - 32]);
+            if(pos == 0)
+            {  
+                writeCustomChar(basicFont_arabic[c1 - 32]);
+            }
+            if(pos == 2)
+            {   
+                writeCustomChar(basicFont_arabic[c1 - 32]);
+            }
         }
     }
-}
 
     
     /**
@@ -116,7 +116,7 @@ namespace oled96 {
             //for (let c of s) {
            let c = s.charAt(c_index);
            putCharArabic(c, pos);
-           
+           /*
            if(c_index >  1 ){//put next as last char
                 pos = 1;// mid letter unless...
            }
@@ -125,26 +125,7 @@ namespace oled96 {
            }
            if(c_index == 1 ){//put next as last char
                 pos = 2;
-           }
-
-
-           /*
-           if(c_index ==  (s.length-1) ){//put next as first char
-                putCharArabic(c, 0);
-           }
-           if(c_index ==  0 ){//put next as last char
-                putCharArabic(c, 2);
-           }
-           if(c_index !=  (s.length-1) && c_index != 0) {//mid
-                putCharArabic(c,1);   
-           }
-           if(c == ' '){//put next as first char again
-                putCharArabic(c,0);
-               
-               //pos = 0;
-           }
-           */
-           
+           }*/
             
         }
         //console.log("s0:" +  s.charCodeAt(0));
