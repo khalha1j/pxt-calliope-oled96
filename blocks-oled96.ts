@@ -116,12 +116,14 @@ namespace oled96 {
             //for (let j = 0; j < 8; j++) {
             //for (let c of s) {
            let c      = s.charAt(c_index);
-           let c_next = "";// s.charAt(c_index-1);
+           //let c_next = "";// s.charAt(c_index-1);
 
            putCharArabic(c, pos);
 
            if(c_index >  1 &&  c_index ){//put next as last char
-
+               pos = 1;// mid letter unless...
+ 
+               /*
                if( c_next == ' ')
                {
                     pos = 0;// first letter again unless...
@@ -130,6 +132,7 @@ namespace oled96 {
                {
                    pos = 1;// mid letter unless...
                }
+               */
                
            }
            if(c == ' ' ){//put next as first char
