@@ -123,12 +123,12 @@ namespace oled96 {
            if(c_index ==  0 ){//put next as last char
                 putCharArabic(c, 2);
            }
-           else if(c == ' '){//put next as first char again
-                putCharArabic(c,1);
-               //pos = 0;
-           }
-           else{
+           if(c_index !=  (s.length-1) && c_index != 0) {//mid
                 putCharArabic(c,1);   
+           }
+           if(c == ' '){//put next as first char again
+                putCharArabic(c,0);
+               //pos = 0;
            }
            
             
