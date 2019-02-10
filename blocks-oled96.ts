@@ -81,7 +81,7 @@ namespace oled96 {
             console.log("c1:" +  c1);
         } else {
 
-            writeCustomChar(basicFont[c1 - 32]);
+            //writeCustomChar(basicFont[c1 - 32]);
             writeCustomChar(basicFont_arabic[c1 - 32]);
 
             
