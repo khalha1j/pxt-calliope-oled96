@@ -111,14 +111,16 @@ namespace oled96 {
     //% block="write %s|to display"
     export function writeString(s: string) {
         let pos: number =0;
+        let c_next: string = "";
        for( let c_index =  (s.length-1); c_index >=0; c_index-- ) {
             //for (let j = 0; j < 8; j++) {
             //for (let c of s) {
            let c = s.charAt(c_index);
            putCharArabic(c, pos);
+
            if(c_index >  1 &&  c_index ){//put next as last char
-              
-               let c_next: string = s.charAt(c_index-1);
+                c_next = s.charAt(c_index-1);
+
                if( c_next == ' ')
                {
                     pos = 0;// first letter again unless...
