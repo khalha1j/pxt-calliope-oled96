@@ -120,7 +120,7 @@ namespace oled96 {
            if(c_index >  1 ){//put next as last char
                 pos = 1;// mid letter unless...
            }
-           if(c == ' ' ){//put next as last char
+           if(c == ' ' ){//put next as first char
                 pos = 0;
            }
            if(c_index == 1 ){//put next as last char
