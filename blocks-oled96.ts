@@ -5,7 +5,7 @@
 namespace oled96 {
     /**
      * Resets the display and clears it.
-     * Should be used at the start of the program.
+     * Should be used at the beginning the program.
      */
     //% blockId=oled96_init_display
     //% block="initialize display"
@@ -91,14 +91,14 @@ namespace oled96 {
             console.log("c1:" + c1);
         } else {
             //writeCustomChar(basicFont[c1 - 32]);
-            if (pos == 0) {//starting
-                writeCustomChar(basicFont_arabic_starting[c1 - 32]);
+            if (pos == 0) {//ending
+                writeCustomChar(basicFont_arabic_ending[c1 - 32]);
             }
             if (pos == 1) {//mid
                 writeCustomChar(basicFont_arabic_mid[c1 - 32]);
             }
             if (pos == 2) {//ending
-                writeCustomChar(basicFont_arabic_ending[c1 - 32]);
+                writeCustomChar(basicFont_arabic_starting[c1 - 32]);
             }
             if (pos == 3) {//separate
                 writeCustomChar(basicFont_arabic_separate[c1 - 32]);
@@ -108,12 +108,12 @@ namespace oled96 {
 
 
     /**
-    * Writes a HAK 2.35 string to the display at the current cursor position.
+    * Writes a HAK 2.37 string to the display at the current cursor position.
     */
     //% blockId=oled96_write_string
     //% block="write %s|to display"
     export function writeString(s: string) {
-        let pos = 0; 
+        let pos = 0;
         let posNext = 0;
         let posPrev = 0;
         for (let c_index = (s.length - 1); c_index >= 0; c_index--) {
@@ -142,7 +142,7 @@ namespace oled96 {
                     pos = 1;//mid  
                 }
             }
-            
+
 
             //guaranteed shapes
             if (c_index == (s.length - 1)) {//put next as first char
@@ -311,7 +311,7 @@ const RIGHT_HORIZONTAL_SCROLL = 0x26;
 const LEFT_HORIZONTAL_SCROLL = 0x27;
 const VERTICAL_AND_RIGHT_HORIZONTAL_SCROLL = 0x29;
 const VERTICAL_AND_LEFT_HORIZONTAL_SCROLL = 0x2A;
-
+ 
 const basicFont_arabic_starting: string[] = [
     "\x00\x00\x00\x00\x00\x00\x00\x00", // " "  0
     "\x00\x00\x20\x30\x28\x00\x00\x00", // "!"  1   ء
@@ -321,10 +321,10 @@ const basicFont_arabic_starting: string[] = [
     "\x10\x24\x26\x25\x20\x1F\x00\x00", // "%"  5   إ
     "\x34\x67\x45\x40\x4C\x2A\x12\x00", // "&"  6   ئ
     "\x00\x00\x00\x00\x00\x3F\x00\x00", // "'"  7   ا
-    "\x38\x20\x20\x20\xA0\x20\x20\x38", // "("  8   ب
+    "\x10\x10\x10\x10\x50\x10\x10\x1C", // "("  8   baa
     "\x00\x00\x1D\x24\x25\x18\x00\x00", // ")"  9   ة
     "\x38\x20\x20\x22\x20\x22\x20\x38", // "*"  10  ت
-    "\x18\x20\x20\x22\x21\x22\x20\x18", // "+"  11  ث
+    "\x10\x10\x14\x12\x14\x10\x10\x1C", // "+"  11  thaa
     "\x00\x70\x8A\xAA\x8A\x44\x00\x00", // ","  12  ج
     "\x00\x70\x8A\x8A\x8A\x44\x00\x00", // "-"  13  ح
     "\x00\x70\x8A\x8A\x8A\x44\x01\x00", // "."  14  خ
@@ -332,7 +332,7 @@ const basicFont_arabic_starting: string[] = [
     "\x00\x00\x20\x24\x28\x12\x00\x00", // "0"  16  ذ
     "\x00\x40\x40\x40\x20\x18\x00\x00", // "1"  17  ر
     "\x00\x40\x40\x40\x20\x1A\x00\x00", // "2"  18  ز
-    "\x38\x40\x40\x38\x20\x38\x20\x18", // "3"  19  س
+    "\x10\x10\x1C\x10\x1C\x10\x1C\x00", // "3"  19  seen
     "\x38\x40\x40\x38\x22\x39\x22\x18", // "4"  20  ش
     "\x38\x40\x40\x38\x30\x28\x24\x18", // "5"  21  ص
     "\x38\x40\x40\x38\x32\x28\x24\x18", // "6"  22  ض
@@ -521,14 +521,14 @@ const basicFont_arabic_ending: string[] = [
     "\x00\x00\x00\x00\x00\x3F\x00\x00", // "'"  7   ا
     "\x38\x20\x20\x20\xA0\x20\x20\x38", // "("  8   ب
     "\x00\x00\x1D\x24\x25\x18\x00\x00", // ")"  9   ة
-    "\x38\x20\x20\x22\x20\x22\x20\x38", // "*"  10  ت
+    "\x1C\x10\x12\x10\x12\x10\x1C\x10", // "*"  10  taa
     "\x18\x20\x20\x22\x21\x22\x20\x18", // "+"  11  ث
     "\x00\x70\x8A\xAA\x8A\x44\x00\x00", // ","  12  ج
     "\x00\x70\x8A\x8A\x8A\x44\x00\x00", // "-"  13  ح
     "\x00\x70\x8A\x8A\x8A\x44\x01\x00", // "."  14  خ
     "\x00\x00\x20\x24\x28\x10\x00\x00", // "/"  15  د
     "\x00\x00\x20\x24\x28\x12\x00\x00", // "0"  16  ذ
-    "\x00\x40\x40\x40\x20\x18\x00\x00", // "1"  17  ر
+    "\x80\x80\x40\x38\x10\x10\x10\x10", // "1"  17  raa
     "\x00\x40\x40\x40\x20\x1A\x00\x00", // "2"  18  ز
     "\x38\x40\x40\x38\x20\x38\x20\x18", // "3"  19  س
     "\x38\x40\x40\x38\x22\x39\x22\x18", // "4"  20  ش
@@ -608,7 +608,7 @@ const basicFont_arabic_ending: string[] = [
     "\x00\x02\x01\x01\x02\x01\x00\x00" // "~"   95
 ];
 
-const basicFont_arabic_mid : string[] = [
+const basicFont_arabic_mid: string[] = [
     "\x00\x00\x00\x00\x00\x00\x00\x00", // " "  0
     "\x00\x00\x20\x30\x28\x00\x00\x00", // "!"  1   ء
     "\x03\x01\x02\x03\x00\x3F\x00\x00", // """  2   آ
@@ -622,13 +622,13 @@ const basicFont_arabic_mid : string[] = [
     "\x38\x20\x20\x22\x20\x22\x20\x38", // "*"  10  ت
     "\x18\x20\x20\x22\x21\x22\x20\x18", // "+"  11  ث
     "\x00\x70\x8A\xAA\x8A\x44\x00\x00", // ","  12  ج
-    "\x00\x70\x8A\x8A\x8A\x44\x00\x00", // "-"  13  ح
+    "\x10\x10\x14\x14\x14\x18\x10\x10", // "-"  13  hhaa
     "\x00\x70\x8A\x8A\x8A\x44\x01\x00", // "."  14  خ
     "\x00\x00\x20\x24\x28\x10\x00\x00", // "/"  15  د
     "\x00\x00\x20\x24\x28\x12\x00\x00", // "0"  16  ذ
     "\x00\x40\x40\x40\x20\x18\x00\x00", // "1"  17  ر
     "\x00\x40\x40\x40\x20\x1A\x00\x00", // "2"  18  ز
-    "\x38\x40\x40\x38\x20\x38\x20\x18", // "3"  19  س
+    "\x10\x10\x1C\x10\x1C\x10\x1C\x10", // "3"  19  seen
     "\x38\x40\x40\x38\x22\x39\x22\x18", // "4"  20  ش
     "\x38\x40\x40\x38\x30\x28\x24\x18", // "5"  21  ص
     "\x38\x40\x40\x38\x32\x28\x24\x18", // "6"  22  ض
@@ -648,7 +648,7 @@ const basicFont_arabic_mid : string[] = [
     "\x00\x00\x00\x18\x20\x20\x1F\x00", // "D"  36  ل
     "\x00\x00\xF0\x10\x18\x14\x1C\x00", // "E"  37  م
     "\x78\xC0\x80\x82\x80\xC0\x78\x00", // "F"  38  ن
-    "\x00\x00\x1C\x24\x24\x18\x00\x00", // "G"  39  هـ
+    "\x10\x10\x10\x7C\xD6\x7C\x10\x10", // "G"  39  haa
     "\x00\x00\x40\xC0\xC4\x6A\x1E\x00", // "H"  40  و
     "\x1C\x30\xA0\x20\xA6\x15\x09\x00", // "I"  41  ى
     "\x1C\x30\xA0\x20\xA6\x15\x09\x00", // "J"  42  ي
