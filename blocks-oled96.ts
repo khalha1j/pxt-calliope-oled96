@@ -103,19 +103,19 @@ namespace oled96 {
     }
 
     /**
-     * Writes a HAK2 string to the display at the current cursor position.
+     * Writes a HAK3 string to the display at the current cursor position.
      */
     //% blockId=oled96_write_string
     //% block="write %s|to display"
     export function writeString(s: string) {
-        let pos: number =0;
+        let pos = 0;
        for( let c_index =  (s.length-1); c_index >=0; c_index-- ) {
             //for (let j = 0; j < 8; j++) {
             //for (let c of s) {
            let c = s.charAt(c_index);
            putCharArabic(c, pos);
           let c_next = ' ';//s.charAt(1);
-
+        /*
            if(c_index >  1 ){//put next as last char
                if( c_next == ' ')
                {
@@ -135,6 +135,7 @@ namespace oled96 {
            }
             
         }
+        */
         //console.log("s0:" +  s.charCodeAt(0));
     }
 
