@@ -114,7 +114,7 @@ namespace oled96 {
             //for (let c of s) {
            let c = s.charAt(c_index);
            putCharArabic(c, pos);
-           /*
+           
            if(c_index >  1 ){//put next as last char
                 pos = 1;// mid letter unless...
            }
@@ -123,7 +123,7 @@ namespace oled96 {
            }
            if(c_index == 1 ){//put next as last char
                 pos = 2;
-           }*/
+           }
             
         }
         //console.log("s0:" +  s.charCodeAt(0));
