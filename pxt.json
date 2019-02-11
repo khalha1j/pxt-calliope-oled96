@@ -10,5 +10,6 @@
         "blocks-oled96.ts"
     ],
     "testFiles": [],
-    "public": true
+    "public": true,
+    "installedVersion": "workspace:3ae46316-8af3-41e9-c2d5-c31f8be57034"
 }
