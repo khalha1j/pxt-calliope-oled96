@@ -103,7 +103,7 @@ namespace oled96 {
     }
 
     /**
-     * Writes a HAK string to the display at the current cursor position.
+     * Writes a HAK2 string to the display at the current cursor position.
      */
     //% blockId=oled96_write_string
     //% block="write %s|to display"
@@ -114,7 +114,7 @@ namespace oled96 {
             //for (let c of s) {
            let c = s.charAt(c_index);
            putCharArabic(c, pos);
-          let c_next = s.charAt(1);
+          let c_next = ' ';//s.charAt(1);
 
            if(c_index >  1 ){//put next as last char
                if( c_next == ' ')
