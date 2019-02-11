@@ -108,9 +108,25 @@ namespace oled96 {
     //% blockId=oled96_write_string
     //% block="write %s|to display"
     export function writeString(s: string) {
-        for (let c of s) {
-            putChar(c);
+        let pos: number =0;
+       for( let c_index =  (s.length-1); c_index >=0; c_index-- ) {
+            //for (let j = 0; j < 8; j++) {
+            //for (let c of s) {
+           let c = s.charAt(c_index);
+           putCharArabic(c, pos);
+           /*
+           if(c_index >  1 ){//put next as last char
+                pos = 1;// mid letter unless...
+           }
+           if(c == ' ' ){//put next as last char
+                pos = 0;
+           }
+           if(c_index == 1 ){//put next as last char
+                pos = 2;
+           }*/
+            
         }
+        //console.log("s0:" +  s.charCodeAt(0));
     }
 
     /**
