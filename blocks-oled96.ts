@@ -103,7 +103,7 @@ namespace oled96 {
     }
 
     /**
-     * Writes a string to the display at the current cursor position.
+     * Writes a HAK string to the display at the current cursor position.
      */
     //% blockId=oled96_write_string
     //% block="write %s|to display"
