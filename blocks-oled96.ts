@@ -114,9 +114,9 @@ namespace oled96 {
             //for (let c of s) {
            let c = s.charAt(c_index);
            putCharArabic(c, pos);
-           
+          let c_next = s.charAt(1);
+
            if(c_index >  1 ){//put next as last char
-                let c_next = s.charAt(c_index-1);
                if( c_next == ' ')
                {
                     pos = 0;// first letter again unless...
