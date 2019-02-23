@@ -1,24 +1,118 @@
 /**
  * Provides functions to control the Grove OLED 0.96" from a Calliope Mini.
  */
-//% color=#fabe58 icon="\uf108" block="Grove OLED"
+//% color=#fabe58 icon="\uf108" block="pinky OLED"
 namespace oled96 {
+
+    let _rawHeight = 64;
+    let _rawWidth = 128;
+    let flipped = false;
+
+    const EXTERNALVCC = 0x1;
+    const SWITCHCAPVCC = 0x2;
+    const COLUMNADDR = 0x21;
+    const PAGEADDR = 0x22;
+    const SETCONTRAST = 0x81;
+    const DISPLAYALLON_RESUME = 0xA4;
+    const DISPLAYALLON = 0xA5;
+    const NORMALDISPLAY = 0xA6;
+    const INVERTDISPLAY = 0xA7;
+    const DISPLAYOFF = 0xAE;
+    const DISPLAYON = 0xAF;
+    const SETDISPLAYOFFSET = 0xD3;
+    const SETCOMPINS = 0xDA;
+    const SETVCOMDETECT = 0xDB;
+    const SETDISPLAYCLOCKDIV = 0xD5;
+    const SETPRECHARGE = 0xD9;
+    const SETMULTIPLEX = 0xA8;
+    const SETLOWCOLUMN = 0x00;
+    const SETHIGHCOLUMN = 0x10;
+    const SETSTARTLINE = 0x40;
+    const MEMORYMODE = 0x20;
+    const COMSCANINC = 0xC0;
+    const COMSCANDEC = 0xC8;
+    const SEGREMAP = 0xA0;
+    const CHARGEPUMP = 0x8D;
+
+
+
+    const SET_START_LINE = 0x00;
+    const EXTERNAL_VCC = false;
+    const SEG_REMAP = 0xA1; // using 0xA0 will flip screen
+    const COM_SCAN_DEC = 0xC8;
+    const COM_SCAN_INC = 0xC0;
+    const SET_COM_PINS = 0xDA;
+    const SET_CONTRAST = 0x81;
+    const SET_PRECHARGE = 0xd9;
+    const SET_VCOM_DETECT = 0xDB;
+    const DISPLAY_ALL_ON_RESUME = 0xA4;
+    const NORMAL_DISPLAY = 0xA6;
+    const COLUMN_ADDR = 0x21;
+    const PAGE_ADDR = 0x22;
+    const INVERT_DISPLAY = 0xA7;
+    const ACTIVATE_SCROLL = 0x2F;
+    const DEACTIVATE_SCROLL = 0x2E;
+    const SET_VERTICAL_SCROLL_AREA = 0xA3;
+    const RIGHT_HORIZONTAL_SCROLL = 0x26;
+    const LEFT_HORIZONTAL_SCROLL = 0x27;
+    const VERTICAL_AND_RIGHT_HORIZONTAL_SCROLL = 0x29;
+    const VERTICAL_AND_LEFT_HORIZONTAL_SCROLL = 0x2A;
+
     /**
-     * Resets the display and clears it.
+     * Resets the display and clears it. hak1.22
      * Should be used at the beginning the program.
      */
     //% blockId=oled96_init_display
     //% block="initialize display"
     export function initDisplay(): void {
-        cmd(DISPLAY_OFF);
+        /*cmd(DISPLAY_OFF);
         cmd(0x20);
         cmd(0x00);
         cmd(COM_SCAN_DEC);
         cmd(0xA1);
         cmd(DISPLAY_ON);
         cmd(NORMAL_DISPLAY);
+        clearDisplay();*/
+        let vccstate = 0x2;
+        const EXTERNALVCC = 0x1;
+        cmd(DISPLAYOFF);
+        cmd(SETDISPLAYCLOCKDIV);
+        cmd(0x80);                                  // the suggested ratio 0x80
+        cmd(SETMULTIPLEX);
+        cmd(_rawHeight - 1);
+        cmd(SETDISPLAYOFFSET);
+        cmd(0x0);                                   // no offset
+        cmd(SETSTARTLINE | 0x0);            // line #0
+        cmd(CHARGEPUMP);
+        cmd((vccstate == EXTERNALVCC) ? 0x10 : 0x14);
+        cmd(MEMORYMODE);
+        cmd(0x00);                                  // 0x0 act like ks0108
+        cmd(SEGREMAP | 0x1);
+        cmd(COMSCANDEC);
+        cmd(SETCOMPINS);
+        cmd(_rawHeight == 32 ? 0x02 : 0x12);        // TODO - calculate based on _rawHieght ?
+        cmd(SETCONTRAST);
+        cmd(_rawHeight == 32 ? 0x8F : ((vccstate == EXTERNALVCC) ? 0x9F : 0xCF));
+        cmd(SETPRECHARGE);
+        cmd((vccstate == EXTERNALVCC) ? 0x22 : 0xF1);
+        cmd(SETVCOMDETECT);
+        cmd(0x40);
+        cmd(DISPLAYALLON_RESUME);
+        cmd(NORMALDISPLAY);
+        cmd(DISPLAYON);
         clearDisplay();
+        display();
     }
+
+    function display() {
+        cmd(SETLOWCOLUMN | 0x0);  // low col = 0
+        cmd(SETHIGHCOLUMN | 0x0);  // hi col = 0
+        cmd(SETSTARTLINE | 0x0); // line #0
+        //sendDisplayBuffer();
+
+    }
+
+
 
     /**
      * Clears the whole display.
@@ -108,12 +202,13 @@ namespace oled96 {
 
 
     /**
-    * Writes a HAK 2.37 string to the display at the current cursor position.
+    * Writes a HAK 2.38 string to the display at the current cursor position.
     */
     //% blockId=oled96_write_string
     //% block="write %s|to display"
     export function writeString(s: string) {
         let pos = 0;
+        let useless = 0;
         let posNext = 0;
         let posPrev = 0;
         for (let c_index = (s.length - 1); c_index >= 0; c_index--) {
@@ -166,6 +261,304 @@ namespace oled96 {
 
         }
     }
+
+
+
+    /**
+     * Draw a horizontal line v2.226 12
+     * @param x  eg, 1
+     * @param y eg, 1
+     * @param data eg, 1
+     */
+    //% blockId=grove_oled_draw_pixel 
+    //% block="Draw pixel point at x %x| and y %y| and data %data|"
+    //% y.min=0 y.max=128
+    //% x.min=0 x.max=64
+    //% data.min=0 data.max=16
+    export function drawPixel(x: number, y: number, data: number) {
+        if (x < 0) x = 0;
+        else if (x > 127) x = 127;
+        if (y < 0) y = 0;
+        else if (y > 127) y = 127;
+        if (data < 0) data = 0;
+        else if (data > 255) data = 255;
+        setTextXY(x / 8, y / 8);
+        writeData(data);
+    }
+
+
+
+    /**
+     * Draw a horizontal line v2.225
+     * @param x  
+     * @param y
+     * @param len
+     */
+    //% blockId=grove_oled_draw_hline block="%oled|Draw horizontal line start at x|%x|and y|%y|, length|%len|"
+    //% y.min=0 y.max=128
+    //% x.min=0 x.max=64
+    //% len.min=1 len.max=128
+    export function drawHLine(x: number, y: number, len: number) {
+        let y_max = y + len;
+        if (y_max > 128) y_max = 128;
+        for (let i = y; i < y_max; i++) {
+            drawPixel(x, i, 0x01 << (x % 8));
+        }
+    }
+
+
+    /**
+     * Draw a vertical line
+     * @param x  
+     * @param y
+     * @param len
+     */
+    //% blockId=grove_oled_draw_vline block="%oled|Draw vertical line start at x|%x|and y|%y|, length|%len|"
+    //% y.min=0 y.max=128
+    //% x.min=0 x.max=64
+    //% len.min=1 len.max=128
+    export function drawVLine(x: number, y: number, len: number) {
+        let x_min = 0, x_max = 0;
+        x_min = Math.floor((x / 8));
+        x_max = x + len;
+        x_min = x_min * 8;
+        if (x_max > 128) x_max = 128;
+        while ((x_max % 8) != 0) {
+            x_max++;
+        }
+
+        let last_bit = 0xff;
+        for (let i = 0; i < (x_max - x - len); i++) {
+            last_bit = last_bit - (0x01 << (7 - i));
+        }
+        let first_bit = 0xff;
+        for (let i = 0; i < (x - x_min); i++) {
+            first_bit = first_bit - (0x01 << i);
+        }
+
+        if (x_max - x_min > 16) {
+            drawPixel(x_min, y, first_bit);
+            for (let i = x_min + 8; i < x_max - 8; i = i + 8) {
+                drawPixel(i, y, 0xff);
+            }
+            drawPixel(x_max - 1, y, last_bit);
+        }
+        else if (x_max - x_min == 16) {
+            drawPixel(x_min, y, first_bit);
+            drawPixel(x_max - 1, y, last_bit);
+        }
+        else {
+            drawPixel(x_min, y, (first_bit & last_bit));
+        }
+    }
+
+    /**
+     * Draw any line line v2.444
+     * @param x0
+     * @param y0
+     * @param x1
+     * @param y1
+     */
+    //% blockId=grove_oled_draw_line block="%oled|Draw line start at x0|%x0|and y0|%y|and ends at x1|%x1|and y1|%y1|"
+    //% y0.min=0 y0.max=128
+    //% x0.min=0 x0.max=64
+    //% y1.min=0 y1.max=128
+    //% x1.min=0 x1.max=64
+    export function drawLine(x0: number, y0: number, x1: number, y1: number) {
+        let steep = Math.abs(y1 - y0) > Math.abs(x1 - x0);
+
+        if (steep) {
+            x0 = x0 + y0;
+            y0 = x0 - y0;
+            x0 = x0 - y0;
+
+            //swap(x0, y0);
+            x1 = x1 + y1;
+            y1 = x1 - y1;
+            x1 = x1 - y1;
+
+            //swap(x1, y1);
+        }
+
+        if (x0 > x1) {
+            x0 = x0 + x1;
+            x1 = x0 - x1;
+            x0 = x0 - x1;
+
+            //swap(x0, x1);
+
+            y0 = y0 + y1;
+            y1 = y0 - y1;
+            y0 = y0 - y1;
+            //swap(y0, y1);
+        }
+
+        let dx = x1 - x0;
+        let dy = Math.abs(y1 - y0);
+
+        let err = dx / 2;
+        let ystep = 0;
+
+        if (y0 < y1)
+            ystep = 1;
+        else
+            ystep = -1;
+
+        for (; x0 <= x1; x0++) {
+            if (steep)
+                drawPixel(y0, x0, 0x01 << (y0 % 8));
+            else
+                drawPixel(x0, y0, 0x01 << (x0 % 8));
+
+            err -= dy;
+            if (err < 0) {
+                y0 += ystep;
+                err += dx;
+            }
+        }
+    }
+
+
+
+
+    /**
+     * Draw a rectangle 2.333
+     * @param x1  
+     * @param y1
+     * @param x2
+     * @param y2
+     */
+    //% blockId=grove_oled_draw_rec 
+    //% block="Draw a rectangle start at x %x1 and y %y1| , end at x %x2| and y %y2|"
+    //% y1.min=0 y1.max=128
+    //% x1.min=0 x1.max=64
+    //% y2.min=0 y2.max=128
+    //% x2.min=0 x2.max=64
+    export function drawRec(x1: number, y1: number, x2: number, y2: number) {
+        let temp = 0;
+        if (y2 < y1) {
+            temp = y2;
+            y2 = y1;
+            y1 = temp;
+        }
+        if (x2 < x1) {
+            temp = x2;
+            x2 = x1;
+            x1 = temp;
+        }
+
+        drawHLine(x1, y1, y2 - y1 + 1);
+        drawHLine(x2, y1, y2 - y1 + 1);
+        drawVLine(x1, y1, x2 - x1 + 1);
+        drawVLine(x1, y2, x2 - x1 + 1);
+    }
+
+
+    /**
+     * Draw a rectangle 2.335
+     * @param x0
+     * @param y0
+     * @param r
+     */
+    //% blockId=grove_oled_draw_cir
+    //% block="Draw a circle start at x %x0 and y %y0| , radius r %r|"
+    //% y0.min=0 y0.max=128
+    //% x0.min=0 x0.max=64
+    //% r.min=0 r.max=64
+    export function drawCircle(x0: number, y0: number, r: number) {
+        let color = 11;
+        let f = 1 - r;
+        let ddF_x = 1;
+        let ddF_y = -2 * r;
+        let x = 0;
+        let y = r;
+
+        drawPixel(x0, y0 + r, color);
+        drawPixel(x0, y0 - r, color);
+        drawPixel(x0 + r, y0, color);
+        drawPixel(x0 - r, y0, color);
+
+        while (x < y) {
+            if (f >= 0) {
+                y--;
+                ddF_y += 2;
+                f += ddF_y;
+            }
+            x++;
+            ddF_x += 2;
+            f += ddF_x;
+
+
+
+            drawPixel(x0 + x, y0 + y, color);
+            drawPixel(x0 - x, y0 + y, color);
+            drawPixel(x0 + x, y0 - y, color);
+            drawPixel(x0 - x, y0 - y, color);
+            drawPixel(x0 + y, y0 + x, color);
+            drawPixel(x0 - y, y0 + x, color);
+            drawPixel(x0 + y, y0 - x, color);
+            drawPixel(x0 - y, y0 - x, color);
+        }
+    }
+
+
+
+
+
+
+
+
+    /**
+     * Draw a character 2.777 ----------------------------------
+     * @param c
+     * @param x
+     * @param y
+     * @param size
+     */
+    //% blockId=grove_oled_draw_char
+    //% block="Draw a character %c start at x %x| and y %y| , size  %size|"
+    //% y.min=0 y.max=128
+    //% x.min=0 x.max=64
+    //% size.min=1 size.max=4 
+    export function drawChar(x: number, y: number, c: number, size: number) {
+        if (
+            (x >= 128) || // Clip right
+            (y >= 64) || // Clip bottom
+            ((x + 8 * size - 1) < 0) || // Clip left
+            ((y + 8 * size - 1) < 0) // Clip top
+        )
+            return;
+
+        for (let i = 0; i < 6; i++) {
+            let line = 0;
+
+            if (i == 8)
+                line = 0x0;
+            else
+                line = basicFont[(c % 4 * 8) + i];;//basicFont_english[(c * 8) + i];//hak temp
+
+            for (let j = 0; j < 8; j++) {
+                if (line & 0x1) {
+                    if (size == 1) // default size
+                        drawPixel(x + i, y + j, 0x01);
+                    else // big size
+                        drawRec(x + (i * size), y + (j * size), size, size);
+                }
+                line >>= 1;
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
 
 
     /**
@@ -311,7 +704,13 @@ const RIGHT_HORIZONTAL_SCROLL = 0x26;
 const LEFT_HORIZONTAL_SCROLL = 0x27;
 const VERTICAL_AND_RIGHT_HORIZONTAL_SCROLL = 0x29;
 const VERTICAL_AND_LEFT_HORIZONTAL_SCROLL = 0x2A;
- 
+
+const basicFont: number[] = [
+    0x00, 0x3F, 0x40, 0x38, 0x40, 0x3F, 0x00, 0x00, //   "W"
+    0x00, 0x63, 0x14, 0x08, 0x14, 0x63, 0x00, 0x00, //   "X"
+    0x00, 0x03, 0x04, 0x78, 0x04, 0x03, 0x00, 0x00, //   "Y"
+    0x00, 0x61, 0x51, 0x49, 0x45, 0x43, 0x00, 0x00 //    "Z"
+]
 const basicFont_arabic_starting: string[] = [
     "\x00\x00\x00\x00\x00\x00\x00\x00", // " "  0
     "\x00\x00\x20\x30\x28\x00\x00\x00", // "!"  1   ء
@@ -381,33 +780,8 @@ const basicFont_arabic_starting: string[] = [
     "\x00\x20\x54\x54\x54\x78\x00\x00", // "a"  65
     "\x00\x7F\x48\x44\x44\x38\x00\x00", // "b"
     "\x00\x38\x44\x44\x28\x00\x00\x00", // "c"
-    "\x00\x38\x44\x44\x48\x7F\x00\x00", // "d"
-    "\x00\x38\x54\x54\x54\x18\x00\x00", // "e"  70
-    "\x00\x08\x7E\x09\x02\x00\x00\x00", // "f"
-    "\x00\x18\xA4\xA4\xA4\x7C\x00\x00", // "g"
-    "\x00\x7F\x08\x04\x04\x78\x00\x00", // "h"
-    "\x00\x00\x7D\x00\x00\x00\x00\x00", // "i"
-    "\x00\x80\x84\x7D\x00\x00\x00\x00", // "j"  75
-    "\x00\x7F\x10\x28\x44\x00\x00\x00", // "k"
-    "\x00\x41\x7F\x40\x00\x00\x00\x00", // "l"
-    "\x00\x7C\x04\x18\x04\x78\x00\x00", // "m"
-    "\x00\x7C\x08\x04\x7C\x00\x00\x00", // "n"
-    "\x00\x38\x44\x44\x38\x00\x00\x00", // "o"  80
-    "\x00\xFC\x24\x24\x18\x00\x00\x00", // "p"
-    "\x00\x18\x24\x24\xFC\x00\x00\x00", // "q"
-    "\x00\x00\x7C\x08\x04\x00\x00\x00", // "r"
-    "\x00\x48\x54\x54\x24\x00\x00\x00", // "s"
-    "\x00\x04\x7F\x44\x00\x00\x00\x00", // "t"  85
-    "\x00\x3C\x40\x40\x7C\x00\x00\x00", // "u"
-    "\x00\x1C\x20\x40\x20\x1C\x00\x00", // "v"
-    "\x00\x3C\x40\x30\x40\x3C\x00\x00", // "w"
-    "\x00\x44\x28\x10\x28\x44\x00\x00", // "x"
-    "\x00\x1C\xA0\xA0\x7C\x00\x00\x00", // "y"  90
-    "\x00\x44\x64\x54\x4C\x44\x00\x00", // "z"  91
-    "\x00\x08\x36\x41\x00\x00\x00\x00", // "{"  92
-    "\x00\x00\x7F\x00\x00\x00\x00\x00", // "|"  93
-    "\x00\x41\x36\x08\x00\x00\x00\x00", // "}"  94
-    "\x00\x02\x01\x01\x02\x01\x00\x00" // "~"   95
+    "\x00\x38\x44\x44\x48\x7F\x00\x00" // "d"
+
 ];
 
 
@@ -480,33 +854,8 @@ const basicFont_arabic_separate: string[] = [
     "\x00\x20\x54\x54\x54\x78\x00\x00", // "a"  65
     "\x00\x7F\x48\x44\x44\x38\x00\x00", // "b"
     "\x00\x38\x44\x44\x28\x00\x00\x00", // "c"
-    "\x00\x38\x44\x44\x48\x7F\x00\x00", // "d"
-    "\x00\x38\x54\x54\x54\x18\x00\x00", // "e"  70
-    "\x00\x08\x7E\x09\x02\x00\x00\x00", // "f"
-    "\x00\x18\xA4\xA4\xA4\x7C\x00\x00", // "g"
-    "\x00\x7F\x08\x04\x04\x78\x00\x00", // "h"
-    "\x00\x00\x7D\x00\x00\x00\x00\x00", // "i"
-    "\x00\x80\x84\x7D\x00\x00\x00\x00", // "j"  75
-    "\x00\x7F\x10\x28\x44\x00\x00\x00", // "k"
-    "\x00\x41\x7F\x40\x00\x00\x00\x00", // "l"
-    "\x00\x7C\x04\x18\x04\x78\x00\x00", // "m"
-    "\x00\x7C\x08\x04\x7C\x00\x00\x00", // "n"
-    "\x00\x38\x44\x44\x38\x00\x00\x00", // "o"  80
-    "\x00\xFC\x24\x24\x18\x00\x00\x00", // "p"
-    "\x00\x18\x24\x24\xFC\x00\x00\x00", // "q"
-    "\x00\x00\x7C\x08\x04\x00\x00\x00", // "r"
-    "\x00\x48\x54\x54\x24\x00\x00\x00", // "s"
-    "\x00\x04\x7F\x44\x00\x00\x00\x00", // "t"  85
-    "\x00\x3C\x40\x40\x7C\x00\x00\x00", // "u"
-    "\x00\x1C\x20\x40\x20\x1C\x00\x00", // "v"
-    "\x00\x3C\x40\x30\x40\x3C\x00\x00", // "w"
-    "\x00\x44\x28\x10\x28\x44\x00\x00", // "x"
-    "\x00\x1C\xA0\xA0\x7C\x00\x00\x00", // "y"  90
-    "\x00\x44\x64\x54\x4C\x44\x00\x00", // "z"  91
-    "\x00\x08\x36\x41\x00\x00\x00\x00", // "{"  92
-    "\x00\x00\x7F\x00\x00\x00\x00\x00", // "|"  93
-    "\x00\x41\x36\x08\x00\x00\x00\x00", // "}"  94
-    "\x00\x02\x01\x01\x02\x01\x00\x00" // "~"   95
+    "\x00\x38\x44\x44\x48\x7F\x00\x00" // "d"
+
 ];
 
 
@@ -579,33 +928,8 @@ const basicFont_arabic_ending: string[] = [
     "\x00\x20\x54\x54\x54\x78\x00\x00", // "a"  65
     "\x00\x7F\x48\x44\x44\x38\x00\x00", // "b"
     "\x00\x38\x44\x44\x28\x00\x00\x00", // "c"
-    "\x00\x38\x44\x44\x48\x7F\x00\x00", // "d"
-    "\x00\x38\x54\x54\x54\x18\x00\x00", // "e"  70
-    "\x00\x08\x7E\x09\x02\x00\x00\x00", // "f"
-    "\x00\x18\xA4\xA4\xA4\x7C\x00\x00", // "g"
-    "\x00\x7F\x08\x04\x04\x78\x00\x00", // "h"
-    "\x00\x00\x7D\x00\x00\x00\x00\x00", // "i"
-    "\x00\x80\x84\x7D\x00\x00\x00\x00", // "j"  75
-    "\x00\x7F\x10\x28\x44\x00\x00\x00", // "k"
-    "\x00\x41\x7F\x40\x00\x00\x00\x00", // "l"
-    "\x00\x7C\x04\x18\x04\x78\x00\x00", // "m"
-    "\x00\x7C\x08\x04\x7C\x00\x00\x00", // "n"
-    "\x00\x38\x44\x44\x38\x00\x00\x00", // "o"  80
-    "\x00\xFC\x24\x24\x18\x00\x00\x00", // "p"
-    "\x00\x18\x24\x24\xFC\x00\x00\x00", // "q"
-    "\x00\x00\x7C\x08\x04\x00\x00\x00", // "r"
-    "\x00\x48\x54\x54\x24\x00\x00\x00", // "s"
-    "\x00\x04\x7F\x44\x00\x00\x00\x00", // "t"  85
-    "\x00\x3C\x40\x40\x7C\x00\x00\x00", // "u"
-    "\x00\x1C\x20\x40\x20\x1C\x00\x00", // "v"
-    "\x00\x3C\x40\x30\x40\x3C\x00\x00", // "w"
-    "\x00\x44\x28\x10\x28\x44\x00\x00", // "x"
-    "\x00\x1C\xA0\xA0\x7C\x00\x00\x00", // "y"  90
-    "\x00\x44\x64\x54\x4C\x44\x00\x00", // "z"  91
-    "\x00\x08\x36\x41\x00\x00\x00\x00", // "{"  92
-    "\x00\x00\x7F\x00\x00\x00\x00\x00", // "|"  93
-    "\x00\x41\x36\x08\x00\x00\x00\x00", // "}"  94
-    "\x00\x02\x01\x01\x02\x01\x00\x00" // "~"   95
+    "\x00\x38\x44\x44\x48\x7F\x00\x00" // "d"
+
 ];
 
 const basicFont_arabic_mid: string[] = [
@@ -677,33 +1001,8 @@ const basicFont_arabic_mid: string[] = [
     "\x00\x20\x54\x54\x54\x78\x00\x00", // "a"  65
     "\x00\x7F\x48\x44\x44\x38\x00\x00", // "b"
     "\x00\x38\x44\x44\x28\x00\x00\x00", // "c"
-    "\x00\x38\x44\x44\x48\x7F\x00\x00", // "d"
-    "\x00\x38\x54\x54\x54\x18\x00\x00", // "e"  70
-    "\x00\x08\x7E\x09\x02\x00\x00\x00", // "f"
-    "\x00\x18\xA4\xA4\xA4\x7C\x00\x00", // "g"
-    "\x00\x7F\x08\x04\x04\x78\x00\x00", // "h"
-    "\x00\x00\x7D\x00\x00\x00\x00\x00", // "i"
-    "\x00\x80\x84\x7D\x00\x00\x00\x00", // "j"  75
-    "\x00\x7F\x10\x28\x44\x00\x00\x00", // "k"
-    "\x00\x41\x7F\x40\x00\x00\x00\x00", // "l"
-    "\x00\x7C\x04\x18\x04\x78\x00\x00", // "m"
-    "\x00\x7C\x08\x04\x7C\x00\x00\x00", // "n"
-    "\x00\x38\x44\x44\x38\x00\x00\x00", // "o"  80
-    "\x00\xFC\x24\x24\x18\x00\x00\x00", // "p"
-    "\x00\x18\x24\x24\xFC\x00\x00\x00", // "q"
-    "\x00\x00\x7C\x08\x04\x00\x00\x00", // "r"
-    "\x00\x48\x54\x54\x24\x00\x00\x00", // "s"
-    "\x00\x04\x7F\x44\x00\x00\x00\x00", // "t"  85
-    "\x00\x3C\x40\x40\x7C\x00\x00\x00", // "u"
-    "\x00\x1C\x20\x40\x20\x1C\x00\x00", // "v"
-    "\x00\x3C\x40\x30\x40\x3C\x00\x00", // "w"
-    "\x00\x44\x28\x10\x28\x44\x00\x00", // "x"
-    "\x00\x1C\xA0\xA0\x7C\x00\x00\x00", // "y"  90
-    "\x00\x44\x64\x54\x4C\x44\x00\x00", // "z"  91
-    "\x00\x08\x36\x41\x00\x00\x00\x00", // "{"  92
-    "\x00\x00\x7F\x00\x00\x00\x00\x00", // "|"  93
-    "\x00\x41\x36\x08\x00\x00\x00\x00", // "}"  94
-    "\x00\x02\x01\x01\x02\x01\x00\x00" // "~"   95
+    "\x00\x38\x44\x44\x48\x7F\x00\x00" // "d"
+
 ];
 
 const basicFont_english: string[] = [
@@ -775,36 +1074,7 @@ const basicFont_english: string[] = [
     "\x00\x20\x54\x54\x54\x78\x00\x00", // "a"  65
     "\x00\x7F\x48\x44\x44\x38\x00\x00", // "b"
     "\x00\x38\x44\x44\x28\x00\x00\x00", // "c"
-    "\x00\x38\x44\x44\x48\x7F\x00\x00", // "d"
-    "\x00\x38\x54\x54\x54\x18\x00\x00", // "e"  70
-    "\x00\x08\x7E\x09\x02\x00\x00\x00", // "f"
-    "\x00\x18\xA4\xA4\xA4\x7C\x00\x00", // "g"
-    "\x00\x7F\x08\x04\x04\x78\x00\x00", // "h"
-    "\x00\x00\x7D\x00\x00\x00\x00\x00", // "i"
-    "\x00\x80\x84\x7D\x00\x00\x00\x00", // "j"  75
-    "\x00\x7F\x10\x28\x44\x00\x00\x00", // "k"
-    "\x00\x41\x7F\x40\x00\x00\x00\x00", // "l"
-    "\x00\x7C\x04\x18\x04\x78\x00\x00", // "m"
-    "\x00\x7C\x08\x04\x7C\x00\x00\x00", // "n"
-    "\x00\x38\x44\x44\x38\x00\x00\x00", // "o"  80
-    "\x00\xFC\x24\x24\x18\x00\x00\x00", // "p"
-    "\x00\x18\x24\x24\xFC\x00\x00\x00", // "q"
-    "\x00\x00\x7C\x08\x04\x00\x00\x00", // "r"
-    "\x00\x48\x54\x54\x24\x00\x00\x00", // "s"
-    "\x00\x04\x7F\x44\x00\x00\x00\x00", // "t"  85
-    "\x00\x3C\x40\x40\x7C\x00\x00\x00", // "u"
-    "\x00\x1C\x20\x40\x20\x1C\x00\x00", // "v"
-    "\x00\x3C\x40\x30\x40\x3C\x00\x00", // "w"
-    "\x00\x44\x28\x10\x28\x44\x00\x00", // "x"
-    "\x00\x1C\xA0\xA0\x7C\x00\x00\x00", // "y"  90
-    "\x00\x44\x64\x54\x4C\x44\x00\x00", // "z"  91
-    "\x00\x08\x36\x41\x00\x00\x00\x00", // "{"  92
-    "\x00\x00\x7F\x00\x00\x00\x00\x00", // "|"  93
-    "\x00\x41\x36\x08\x00\x00\x00\x00", // "}"  94
-    "\x00\x02\x01\x01\x02\x01\x00\x00" // "~"   95
+    "\x00\x38\x44\x44\x48\x7F\x00\x00" // "d"
+
 ];
-
-
-
-
 
