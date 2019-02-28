@@ -186,18 +186,18 @@ namespace oled96 {
         {
             console.log("c1:" + c1);
         } else {
-            
-            if (pos == 0) {//ending
-                write12CustomChar(basicFont_arabic_ending[c1 - 32]);
+
+            if (pos == 0) {//starting
+                write12CustomChar(basicFont_arabic_starting[c1 - 32]);
             }
             if (pos == 1) {//mid
                 write12CustomChar(basicFont_arabic_mid[c1 - 32]);
             }
-            if (pos == 2) {//starting
-                write12CustomChar(basicFont_arabic_starting[c1 - 32]);
+            if (pos == 2) {//ending
+                write12CustomChar(basicFont_arabic_ending[c1 - 32]);
             }
-            if (pos == 3) {//separated
-                write12CustomChar(basicFont_arabic_starting[c1 - 32]);
+            if (pos == 3) {//separate from both sides
+                write12CustomChar(basicFont_arabic_separate[c1 - 32]);
                 //writeCustomChar(basicFont_arabic_separate[c1 - 32]);
             }
         }
@@ -225,42 +225,67 @@ namespace oled96 {
                 posPrev = (c_index + 1);
             }
 
-            //START
-
-            if (c_index > 0 && c_index < (s.length - 1)) {//any letter not first and not last in statement
-                if (s.charAt(posPrev) == ' ' && s.charAt(posNext) == ' ') {
-                    pos = 3;//separate
-                } else if (s.charAt(posPrev) == ' ') {
-                    pos = 0;//first 
-                } else if (s.charAt(posNext) == ' ') {
-                    pos = 2;//last
+            if (c_index > 0 && c_index < (s.length - 1)) {
+                //any letter that is neither the first and not last in statement
+                if ((s.charAt(posNext) == ' ' || isSeparator(s, posNext)))
+                {//previous letter is a separator --> this letter is starting or separate
+                    if(s.charAt(posPrev) == ' '){
+                        pos = 3;//separate
+                    }else{
+                        pos = 0;//starting
+                    }
                 } else {
                     pos = 1;//mid  
                 }
             }
 
-
             //guaranteed shapes
-            if (c_index == (s.length - 1)) {//put next as first char
-                if (s.charAt(posNext) == ' ') {
-                    pos = 2; //last
+            if (c_index == (s.length - 1)) {//this is the first char from the left
+                if ((s.charAt(posNext) == ' ') || (isSeparator(s, posNext))) {
+                    pos = 3; //separate
                 } else {
-                    pos = 0; //first
+                    pos = 2;//ending
                 }
             }
-            if (c_index == 0) {//put next or first as last char
-                if (s.charAt(posPrev) == ' ') {
-                    pos = 3;//separate
+            if (c_index == 0) {//this is the last character in the string (last from the left)
+                if ((s.charAt(posPrev) == ' ')
+                ){
+                    pos = 1; //mid
                 } else {
-                    pos = 2; //last
+                    pos = 0;//starting
                 }
             }
 
-            //END
             putCharArabic(c, pos);
             //putChar(c);
 
         }
+    }
+
+
+    function isSeparator(s: string, pos: number): boolean{
+        if ((s.charAt(pos) == ' '
+            || (s.charAt(pos) == 'ر')
+            || (s.charAt(pos) == 'ز')
+            || (s.charAt(pos) == 'و')
+            || (s.charAt(pos) == 'د')
+            || (s.charAt(pos) == 'ذ')
+            || (s.charAt(pos) == 'ا')
+            || (s.charAt(pos) == 'أ')
+            || (s.charAt(pos) == 'آ')
+            || (s.charAt(pos) == 'إ')
+            || (s.charAt(pos) == 'ء')
+            || (s.charAt(pos) == 'ؤ')
+            || (s.charAt(pos) == 'لأ')
+            || (s.charAt(pos) == 'لا')
+            || (s.charAt(pos) == 'لإ')
+            || (s.charAt(pos) == 'لآ')
+        )){
+            return true;
+        }else{
+            return false;
+        }
+        
     }
 
 
@@ -563,7 +588,7 @@ namespace oled96 {
             if (i == 8)
                 line = 0x0;
             else
-                line = basicFont[(c%6 * 8) + i];//basicFont_english[(c * 8) + i];//hak temp
+                line = basicFont[(c % 6 * 8) + i];//basicFont_english[(c * 8) + i];//hak temp
 
             for (let j = 0; j < 8; j++) {
                 if (line & 0x1) {
@@ -984,7 +1009,7 @@ const basicFont_arabic_separate: string[] = [
     "\x00\x00\x00\x00\x00\x00\x00\x00\x00\xFE\x7F\x00\x00\x00\x00\x00", // "'"  7   ا
     "\x30\x30\x30\xB0\xB0\x30\x3E\x3E\x3C\x30\x30\x30\x30\x30\x30\x30", // "("  8   baa
     "\x00\x00\x00\x00\x73\xFB\xFC\xCE\xCE\xDC\xFB\x73\x00\x00\x00\x00", // ")"  9   ة
-    "\x60\x60\x60\x60\x60\x66\x66\x60\x66\x66\x60\x3C\x3C\x18\x00\x00", // "*"  10  ت
+    "\x00\x1C\x38\x32\x32\x30\x30\x32\x32\x38\x1C\x00\x00\x00\x00\x00", // "*"  10  ت
     "\x30\x30\x36\x34\x33\x35\x36\x30\x3E\x1C\x00\x00\x00\x00\x00\x00", // "+"  11  thaa
     "\x60\xE0\xE0\xE2\xE3\xE3\xE3\x73\x33\x37\xDE\xDC\x38\x70\x60\x40", // ","  12  ج
     "\x00\x60\xE0\xE4\xE6\xE6\xE7\xE7\xE7\xEE\xFC\xF8\xF8\xF0\x60\x20", // "-"  13  ح
@@ -1165,7 +1190,7 @@ const basicFont_arabic_mid: string[] = [
     "\x30\x30\x30\x30\x7C\xFE\xB6\xFE\x7C\x30\x30\x30\x00\x00\x00\x00", // "G"  39  هـ
     "\x40\xC0\xCC\xDF\xDB\x7E\x3C\x30\x30\x30\x30\x30\x00\x00\x00\x00", // "H"  40  و
     "\x1C\x3E\x70\x60\x60\x66\x6F\x39\x03\x0F\x38\x30\x00\x00\x00\x00", // "I"  41  ى
-    "\x00\x1C\xBE\xB0\x30\xB0\xB0\x3E\x3F\x03\x3F\x3E\x00\x00\x00\x00", // "J"  42  ي
+    "\x30\xB0\xB0\x30\xB0\xB0\x3C\x1C\x30\x30\x30\x30\x00\x00\x00\x00", // "J"  42  ي
     "\x00\x7F\x08\x14\x22\x41\x00\x00\x00\x7F\x08\x14\x22\x41\x00\x00", // "K"  43  تنوين فتح ً
     "\x00\x7F\x40\x40\x40\x40\x00\x00\x00\x7F\x40\x40\x40\x40\x00\x00", // "L"  44  تنوين ضم  ٌ
     "\x00\x7F\x02\x0C\x02\x7F\x00\x00\x00\x7F\x02\x0C\x02\x7F\x00\x00", // "M"  45
