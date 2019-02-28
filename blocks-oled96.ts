@@ -227,11 +227,10 @@ namespace oled96 {
 
             if (c_index > 0 && c_index < (s.length - 1)) {
                 //any letter that is neither the first and not last in statement
-                if ((s.charAt(posNext) == ' ' || isSeparator(s, posNext)))
-                {//previous letter is a separator --> this letter is starting or separate
-                    if(s.charAt(posPrev) == ' '){
+                if ((s.charAt(posNext) == ' ' || isSeparator(s, posNext))) {//previous letter is a separator : this letter is starting or separate
+                    if (s.charAt(posPrev) == ' ') {
                         pos = 3;//separate
-                    }else{
+                    } else {
                         pos = 0;//starting
                     }
                 } else {
@@ -249,7 +248,7 @@ namespace oled96 {
             }
             if (c_index == 0) {//this is the last character in the string (last from the left)
                 if ((s.charAt(posPrev) == ' ')
-                ){
+                ) {
                     pos = 1; //mid
                 } else {
                     pos = 0;//starting
@@ -263,7 +262,7 @@ namespace oled96 {
     }
 
 
-    function isSeparator(s: string, pos: number): boolean{
+    function isSeparator(s: string, pos: number): boolean {
         if ((s.charAt(pos) == ' '
             || (s.charAt(pos) == 'ر')
             || (s.charAt(pos) == 'ز')
@@ -280,12 +279,12 @@ namespace oled96 {
             || (s.charAt(pos) == 'لا')
             || (s.charAt(pos) == 'لإ')
             || (s.charAt(pos) == 'لآ')
-        )){
+        )) {
             return true;
-        }else{
+        } else {
             return false;
         }
-        
+
     }
 
 
