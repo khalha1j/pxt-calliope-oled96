@@ -204,16 +204,47 @@ namespace oled96 {
     }
 
 
+
+
+
     /**
-    * Writes a HAK 2.38 string to the display at the current cursor position.
+    * Writes a HAK 2.384 string to the display at the current cursor position.
+    * @param s display string
+    * @param line linenumber
     */
-    //% blockId=oled96_write_string
-    //% block="write %s|to display"
-    export function writeString(s: string) {
+    //% blockId=oled96_write_string_english block="write (English) %s|to display at line %line|"
+    //% line.min=0 line.max=7
+    export function writeStringEnglish(s: string, line: number) {
         let pos = 0;
         let useless = 0;
         let posNext = 0;
         let posPrev = 0;
+        setTextXY(line, 0);
+        for (let c_index = 0; c_index < (s.length - 1); c_index++) {
+
+            let c = s.charAt(c_index);
+
+
+
+
+            putChar(c);
+
+        }
+    }
+
+    /**
+    * Writes a HAK 2.382 string to the display at the current cursor position.
+    * @param s display string
+    * @param line linenumber
+    */
+    //% blockId=oled96_write_string_arabic block="write (عربي) %s|to display at line %line|"
+    //% line.min=0 line.max=7
+    export function writeStringArabic(s: string, line: number) {
+        let pos = 0;
+        let useless = 0;
+        let posNext = 0;
+        let posPrev = 0;
+        setTextXY(line, 0);
         for (let c_index = (s.length - 1); c_index >= 0; c_index--) {
 
             let c = s.charAt(c_index);
@@ -260,7 +291,6 @@ namespace oled96 {
 
         }
     }
-
 
     function isSeparator(s: string, pos: number): boolean {
         if ((s.charAt(pos) == ' '
