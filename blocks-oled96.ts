@@ -217,21 +217,25 @@ namespace oled96 {
 
     /**
     * Writes a HAK 2.384 string to the display at the current cursor position.
-    * @param s display string
-    * @param line lineNumber
-    * @param col columnNumber
+    * @param s - display text
+    * @param line - lineNumber
+    * @param col - columnNumber
     */
-    //% blockId=oled96_write_string_english block="write (English) %s|to display at line %line| at column %col"
-    //% line.min=0 line.max=7
-    //% col.min=0 col.max=9
+    //% blockId=oled96_write_string_english
+    //% block="write (English) %s in line %line and column %col"
+    //% s.defl="hi"
+    //% col.min=1 col.max=9 col.defl=1
+    //% line.min=1 line.max=8 line.defl=1
+    //% inlineInputMode=inline
+    //% expandableArgumentMode="toggle"
     //% advanced=false
     //% group="2. write"
-    export function writeStringEnglish(s: string, line: number, col: number) {
+    export function writeStringEnglish(s: string, line: number = 1, col: number = 1) {
         let pos = 0;
         let useless = 0;
         let posNext = 0;
         let posPrev = 0;
-        setTextXY(line, col);
+        setTextXY(line - 1, col - 1);
         for (let c_index = 0; c_index < (s.length); c_index++) {
 
             let c = s.charAt(c_index);
@@ -245,12 +249,13 @@ namespace oled96 {
     * @param line linenumber
     * @param col columnNumber
     */
-    //% blockId=oled96_write_string_arabic block="write (عربي) %s|to display at line %line| at column %col"
-    //% line.min=0 line.max=7
-    //% col.min=0 col.max=9
+    //% blockId=oled96_write_string_arabic block="write (عربي) %s| in line  %line and column %col"
+    //% s.defl="مرحبا"
+    //% col.min=1 col.max=9 col.defl=1
+    //% line.min=1 line.max=8 line.defl=1
     //% advanced=false
     //% group="2. write"
-    export function writeStringArabic(s: string, line: number, col: number) {
+    export function writeStringArabic(s: string, line: number = 1, col: number = 1) {
         let pos = 0;
         let posNext = 0;
         let posPrev = 0;
@@ -920,7 +925,7 @@ namespace oled96 {
         cmd(stop);// end row. changing this value produced no visible effect 
         cmd(0X01);// shift distance 
         cmd(0x2F);// cmd(ACTIVATE_SCROLL)
-        
+
         activateHScroll(0);//this is to fix the bug of not scrolling
 
     }
@@ -1397,7 +1402,7 @@ const basicFont_english: string[] = [
     "\x00\x04\x7F\x44\x00\x00\x00\x00", // "t"
     "\x00\x3C\x40\x40\x7C\x00\x00\x00", // "u"
     "\x00\x1C\x20\x40\x20\x1C\x00\x00", // "v"
-    "\x00\x3C\x40\x30\x40\x3C\x00\x00", // "w"
+    "\x00\x3C\x40\x40\x38\x40\x40\x3C", // "w"
     "\x00\x44\x28\x10\x28\x44\x00\x00", // "x"
     "\x00\x1C\xA0\xA0\x7C\x00\x00\x00", // "y"
     "\x00\x44\x64\x54\x4C\x44\x00\x00", // "z"
