@@ -64,6 +64,8 @@ namespace oled96 {
      */
     //% blockId=oled96_init_display
     //% block="initialize display"
+    //% advanced=false
+    //% group="1. initialize"
     export function initDisplay(): void {
         /*cmd(DISPLAY_OFF);
         cmd(0x20);
@@ -119,6 +121,8 @@ namespace oled96 {
      */
     //% blockId=oled96_clear_display
     //% block="clear display"
+    //% advanced=false
+    //% group="2. write"
     export function clearDisplay() {
         cmd(DISPLAY_OFF);   //display off
         for (let j = 0; j < 8; j++) {
@@ -141,6 +145,8 @@ namespace oled96 {
      */
     //% blockId=oled96_clear_range
     //% block="clear %n|characters"
+    //% advanced=true
+    //% group="config"
     export function clearRange(n: number) {
         for (let i = 0; i < n; i++) {
             putChar(' ');
@@ -152,6 +158,8 @@ namespace oled96 {
      */
     //% blockId=oled96_set_text
     //% block="set display cursor to|row %row|and column %column"
+    //% advanced=true
+    //% group="write"
     export function setTextXY(row: number, column: number) {
         let r = row;
         let c = column;
@@ -174,9 +182,9 @@ namespace oled96 {
         let c1 = c.charCodeAt(0);
         if (c1 < 32 || c1 > 127) //Ignore non-printable ASCII characters. This can be modified for multilingual font.
         {
-            writeCustomChar("\x00\xFF\x81\x81\x81\xFF\x00\x00");
+            write8CustomChar("\x00\xFF\x81\x81\x81\xFF\x00\x00");
         } else {
-            writeCustomChar(basicFont_english[c1 - 32]);
+            write8CustomChar(basicFont_english[c1 - 32]);
         }
     }
 
@@ -216,6 +224,8 @@ namespace oled96 {
     //% blockId=oled96_write_string_english block="write (English) %s|to display at line %line| at column %col"
     //% line.min=0 line.max=7
     //% col.min=0 col.max=9
+    //% advanced=false
+    //% group="2. write"
     export function writeStringEnglish(s: string, line: number, col: number) {
         let pos = 0;
         let useless = 0;
@@ -238,6 +248,8 @@ namespace oled96 {
     //% blockId=oled96_write_string_arabic block="write (عربي) %s|to display at line %line| at column %col"
     //% line.min=0 line.max=7
     //% col.min=0 col.max=9
+    //% advanced=false
+    //% group="2. write"
     export function writeStringArabic(s: string, line: number, col: number) {
         let pos = 0;
         let posNext = 0;
@@ -330,6 +342,8 @@ namespace oled96 {
     //% x.min=0 x.max=64
     //% y.min=0 y.max=128
     //% data.min=0 data.max=255
+    //% advanced=true
+    //% group="Draw"
     export function drawPixel(x: number, y: number, data: number) {
         /*if (x < 0) x = 0;
         else if (x > 127) x = 127;
@@ -355,6 +369,8 @@ namespace oled96 {
     //% y.min=0 y.max=128
     //% x.min=0 x.max=64
     //% len.min=1 len.max=128
+    //% advanced=true
+    //% group="Draw"
     export function drawHLine(x: number, y: number, len: number) {
         let y_max = y + len;
         if (y_max > 128) y_max = 128;
@@ -376,6 +392,8 @@ namespace oled96 {
     //% y.min=0 y.max=128
     //% x.min=0 x.max=64
     //% len.min=1 len.max=128
+    //% advanced=true
+    //% group="Draw"
     export function drawVLine(x: number, y: number, len: number) {
         /*
                 let color = 128;
@@ -433,6 +451,8 @@ namespace oled96 {
     //% y.min=0 y.max=128
     //% w.min=1 w.max=128
     //% h.min=1 h.max=64
+    //% advanced=true
+    //% group="Draw"
     export function fillRect(x: number, y: number, w: number, h: number) {
 
         // stupidest version - update in subclasses if desired!
@@ -453,6 +473,8 @@ namespace oled96 {
     //% x0.min=0 x0.max=64
     //% y1.min=0 y1.max=128
     //% x1.min=0 x1.max=64
+    //% advanced=true
+    //% group="Draw"
     export function drawLine(x0: number, y0: number, x1: number, y1: number) {
         let steep = Math.abs(y1 - y0) > Math.abs(x1 - x0);
 
@@ -523,6 +545,8 @@ namespace oled96 {
     //% x1.min=0 x1.max=64
     //% y2.min=0 y2.max=128
     //% x2.min=0 x2.max=64
+    //% advanced=true
+    //% group="Draw"
     export function drawRec(x1: number, y1: number, x2: number, y2: number) {
         let temp = 0;
         if (y2 < y1) {
@@ -554,6 +578,8 @@ namespace oled96 {
     //% y0.min=0 y0.max=128
     //% x0.min=0 x0.max=64
     //% r.min=0 r.max=64
+    //% advanced=true
+    //% group="Draw"
     export function drawCircle(x0: number, y0: number, r: number) {
         let color = 1;
         let f = 1 - r;
@@ -602,6 +628,8 @@ namespace oled96 {
     //% y.min=0 y.max=128
     //% x.min=0 x.max=64
     //% size.min=1 size.max=4 
+    //% advanced=true
+    //% group="write"
     export function drawChar(x: number, y: number, c: number, size: number) {
         if (
             (x >= 128) || // Clip right (width)
@@ -648,6 +676,8 @@ namespace oled96 {
      */
     //% blockId=oled96_normal_display
     //% block="set display to white on black"
+    //% advanced=true
+    //% group="config"
     export function normalDisplay() {
         cmd(NORMAL_DISPLAY);
     }
@@ -657,6 +687,8 @@ namespace oled96 {
      */
     //% blockId=oled96_invert_display
     //% block="set display to black on white"
+    //% advanced=true
+    //% group="config"
     export function invertDisplay() {
         cmd(INVERT_DISPLAY);
     }
@@ -666,6 +698,8 @@ namespace oled96 {
      */
     //% blockId=oled96_flip_screen
     //% block="flip display"
+    //% advanced=true
+    //% group="config"
     export function flipScreen() {
         cmd(DISPLAY_OFF);
         cmd(COM_SCAN_INC);
@@ -682,6 +716,8 @@ namespace oled96 {
      */
     //% blockId=oled96_set_brightness
     //% block="set display brightness|to %brightness"
+    //% advanced=true
+    //% group="config"
     export function setDisplayBrightness(brightness: number) {
         let b = brightness
         if (b < 0) {
@@ -699,6 +735,8 @@ namespace oled96 {
      */
     //% blockId=oled96_turn_off
     //% block="turn display off"
+    //% advanced=true
+    //% group="config"
     export function turnOff() {
         cmd(DISPLAY_OFF);
     }
@@ -708,6 +746,8 @@ namespace oled96 {
      */
     //% blockId=oled96_turn_on
     //% block="turn display on"
+    //% advanced=true
+    //% group="config"
     export function turnOn() {
         cmd(DISPLAY_ON);
     }
@@ -722,7 +762,9 @@ namespace oled96 {
      */
     //% blockId=oled96_write_custom_char
     //% block="write custom character %c"
-    export function writeCustomChar(c: string) {
+    //% advanced=true
+    //% group="write"
+    export function write8CustomChar(c: string) {
         for (let i = 0; i < 8; i++) {
             writeData(c.charCodeAt(i));
         }
@@ -738,6 +780,8 @@ namespace oled96 {
         */
     //% blockId=oled96_write_custom12_char
     //% block="write custom 12 byte character %c"
+    //% advanced=true
+    //% group="write"
     export function write12CustomChar(c: string) {
         let sss = "\x60\x60\x60\x64\x66\x66\x66\x6C\x78\x72\x62\x40" //KHAA
         let ss = "\x00\x00\x00\x00\x60\x61\x63\x67\x7E\x7C\x60\x60" //DAL
@@ -763,6 +807,8 @@ namespace oled96 {
     */
     //% blockId=oled96_write_custom16_char
     //% block="write custom 16 byte character %c"
+    //% advanced=true
+    //% group="write"
     export function write16CustomChar(c: string) {
         /*let sss = "\x60\x64\x66\x66\x63\x63\x63\x63\x67\x66\x6E\x7C\x78\x73\x63\x40" //KHAA
         let ss = "\x00\x00\x00\x00\x00\x00\x00\x61\x63\x63\x63\x7E\x7C\x60\x60\x60" //DAL
@@ -823,6 +869,9 @@ namespace oled96 {
      * Activates horizaontal scrolling.
      */
     //% blockId="oled96_ActivateHScroll" block="activate horizontal scrolling to the direction %scrolldirection|"
+    //% advanced=true
+    //% group="Scroll"
+
     export function activateHScroll(scrolldirection: number) {
 
         if (scrolldirection == ScrollHDirection.left) {
@@ -848,6 +897,9 @@ namespace oled96 {
      * Activates vertical scrolling. v1.03
      */
     //% blockId="oled96_ActivateVScroll" block="activate vertical scrolling to the direction %scrolldirection|"
+    //% advanced=true
+    //% group="Scroll"
+
     export function activateVScroll(scrolldirection: number) {
         let start = 0x00;
         let stop = 0x0F;
@@ -877,12 +929,11 @@ namespace oled96 {
      * Deactivates scrolling.
      */
     //% blockId="oled96_DeactivateScroll" block="deactivate scrolling"
+    //% advanced=true
+    //% group="Scroll"
     export function deactivateScroll() {
         cmd(DEACTIVATE_SCROLL)
     }
-
-
-
 
 
 
@@ -897,6 +948,8 @@ namespace oled96 {
      */
     //% blockId=oled96_send_command
     //% block="send command %c|to display"
+    //% advanced=true
+    //% group="I2C Direct Comm"
     export function cmd(c: number) {
         pins.i2cWriteNumber(0x3c, c, NumberFormat.UInt16BE);
     }
@@ -907,6 +960,8 @@ namespace oled96 {
      */
     //% blockId=oled96_write_data
     //% block="send data %n|to display"
+    //% advanced=true
+    //% group="I2C Direct Comm"
     export function writeData(n: number) {
         let b = n;
         if (n < 0) { n = 0 }
